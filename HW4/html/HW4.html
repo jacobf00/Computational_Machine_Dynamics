@@ -1,0 +1,826 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW4</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-02-04"><meta name="DC.source" content="HW4.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Problem 1</a></li><li><a href="#3">Problem 2</a></li><li><a href="#4">Four bar position check</a></li><li><a href="#5">Problem 3</a></li></ul></div><pre class="codeinput">clc,clear,close
+</pre><h2 id="2">Problem 1</h2><pre class="codeinput">AB = 36; <span class="comment">%in</span>
+AC = 42; <span class="comment">%in</span>
+AD = 96; <span class="comment">%in</span>
+
+e = 40; <span class="comment">%in</span>
+edot = 12; <span class="comment">%in/sec</span>
+
+theta = acosd((-e^2 + AC^2 + AB^2)/(2*AB*AC))
+
+thetadot = (e*edot)/(AB*AC*sind(theta))
+</pre><pre class="codeoutput">
+theta =
+
+   61.1313
+
+
+thetadot =
+
+    0.3625
+
+</pre><h2 id="3">Problem 2</h2><pre class="codeinput">clc,clear,close <span class="string">all</span>
+<span class="comment">% syms theta3 theta4</span>
+
+r1 = 90; <span class="comment">%cm</span>
+r2 = 30; <span class="comment">%cm</span>
+r3 = 60; <span class="comment">%cm</span>
+r4 = 45; <span class="comment">%cm</span>
+theta1 = 0; <span class="comment">%deg</span>
+theta2 = 10; <span class="comment">%deg</span>
+
+<span class="comment">%initial theta1 and theta2 guesses</span>
+theta3 = 0; <span class="comment">%deg</span>
+theta4 = 90; <span class="comment">%deg</span>
+
+q = [theta3 theta4]';
+
+iterations = 5;
+
+<span class="keyword">for</span> i = 1:iterations
+
+    fprintf(<span class="string">'iteration number %i \n'</span>,i)
+
+    fh = r2*cosd(theta2) + r3*cosd(q(1)) - r4*cosd(q(2)) - r1*cosd(theta1);
+    fv = r2*sind(theta2) + r3*sind(q(1)) - r4*sind(q(2)) - r1*sind(theta1);
+
+
+    phi = [fh fv]'
+
+    phiq = [-r3*sind(q(1)) r4*sind(q(2)); r3*cosd(q(1)) -r4*cosd(q(2))]
+
+    grad = phiq\phi
+    grad_deg = rad2deg(grad)
+
+    q = q - grad_deg
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">iteration number 1 
+
+phi =
+
+   -0.4558
+  -39.7906
+
+
+phiq =
+
+     0    45
+    60     0
+
+
+grad =
+
+   -0.6632
+   -0.0101
+
+
+grad_deg =
+
+  -37.9972
+   -0.5803
+
+
+q =
+
+   37.9972
+   90.5803
+
+iteration number 2 
+
+phi =
+
+  -12.7175
+   -2.8509
+
+
+phiq =
+
+  -36.9374   44.9977
+   47.2825    0.4558
+
+
+grad =
+
+   -0.0571
+   -0.3295
+
+
+grad_deg =
+
+   -3.2727
+  -18.8797
+
+
+q =
+
+   41.2698
+  109.4600
+
+iteration number 3 
+
+phi =
+
+   -0.3674
+    2.3565
+
+
+phiq =
+
+  -39.5764   42.4293
+   45.0967   14.9917
+
+
+grad =
+
+    0.0421
+    0.0306
+
+
+grad_deg =
+
+    2.4112
+    1.7530
+
+
+q =
+
+   38.8587
+  107.7071
+
+iteration number 4 
+
+phi =
+
+   -0.0472
+   -0.0146
+
+
+phiq =
+
+  -37.6441   42.8681
+   46.7218   13.6868
+
+
+grad =
+
+    0.0000
+   -0.0011
+
+
+grad_deg =
+
+    0.0005
+   -0.0627
+
+
+q =
+
+   38.8581
+  107.7697
+
+iteration number 5 
+
+phi =
+
+   1.0e-04 *
+
+   -0.0820
+    0.2564
+
+
+phiq =
+
+  -37.6437   42.8531
+   46.7221   13.7337
+
+
+grad =
+
+   1.0e-06 *
+
+    0.4809
+    0.2311
+
+
+grad_deg =
+
+   1.0e-04 *
+
+    0.2755
+    0.1324
+
+
+q =
+
+   38.8581
+  107.7697
+
+</pre><h2 id="4">Four bar position check</h2><pre class="codeinput"><span class="comment">%using geometric four bar position equations to double check the answers</span>
+<span class="comment">%found the the previous problem</span>
+clc,clear,close <span class="string">all</span>
+
+r1 = 90; <span class="comment">%cm</span>
+r2 = 30; <span class="comment">%cm</span>
+r3 = 60; <span class="comment">%cm</span>
+r4 = 45; <span class="comment">%cm</span>
+theta1 = 0; <span class="comment">%deg</span>
+theta2 = 10; <span class="comment">%deg</span>
+
+<span class="comment">%initial theta1 and theta2 guesses</span>
+theta3 = 0; <span class="comment">%deg</span>
+theta4 = 90; <span class="comment">%deg</span>
+
+e = sqrt(r1^2 + r2^2 - 2*r1*r2*cosd(theta2));
+
+alpha = asind((r2*sind(theta2))/e);
+
+gamma = acosd((r3^2 + r4^2 - e^2)/(2*r3*r4));
+
+beta = asind((r3*sind(gamma))/e);
+
+theta4 = 180 - alpha - beta;
+theta3 = theta4 - gamma;
+
+theta3
+theta4
+</pre><pre class="codeoutput">
+theta3 =
+
+   38.8581
+
+
+theta4 =
+
+  107.7697
+
+</pre><h2 id="5">Problem 3</h2><pre class="codeinput">clc,clear,close <span class="string">all</span>
+<span class="comment">% syms theta3 theta4</span>
+
+r1 = 4.07; <span class="comment">%cm</span>
+r2 = 1.6; <span class="comment">%cm</span>
+r3 = 3.57; <span class="comment">%cm</span>
+r4 = 2.24; <span class="comment">%cm</span>
+theta1 = 110.4; <span class="comment">%deg</span>
+theta2 = 270; <span class="comment">%deg</span>
+
+<span class="comment">%initial theta1 and theta2 guesses</span>
+theta3 = 0; <span class="comment">%deg</span>
+theta4 = 90; <span class="comment">%deg</span>
+
+q = [theta3 theta4]';
+
+iterations = 10;
+
+<span class="keyword">for</span> i = 1:iterations
+
+    fprintf(<span class="string">'iteration number %i \n'</span>,i)
+
+    fh = r2*cosd(theta2) + r3*cosd(q(1)) - r4*cosd(q(2)) - r1*cosd(theta1);
+    fv = r2*sind(theta2) + r3*sind(q(1)) - r4*sind(q(2)) - r1*sind(theta1);
+
+
+    phi = [fh fv]'
+
+    phiq = [-r3*sind(q(1)) r4*sind(q(2)); r3*cosd(q(1)) -r4*cosd(q(2))]
+
+    grad = phiq\phi
+    grad_deg = rad2deg(grad)
+
+    q = q - grad_deg
+
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">iteration number 1 
+
+phi =
+
+    4.9887
+   -7.6547
+
+
+phiq =
+
+         0    2.2400
+    3.5700         0
+
+
+grad =
+
+   -2.1442
+    2.2271
+
+
+grad_deg =
+
+ -122.8527
+  127.6030
+
+
+q =
+
+  122.8527
+  -37.6030
+
+iteration number 2 
+
+phi =
+
+   -2.2926
+   -1.0489
+
+
+phiq =
+
+   -2.9990   -1.3668
+   -1.9367   -1.7747
+
+
+grad =
+
+    0.9850
+   -0.4839
+
+
+grad_deg =
+
+   56.4346
+  -27.7227
+
+
+q =
+
+   66.4181
+   -9.8803
+
+iteration number 3 
+
+phi =
+
+    0.6401
+   -1.7585
+
+
+phiq =
+
+   -3.2719   -0.3844
+    1.4282   -2.2068
+
+
+grad =
+
+   -0.2688
+    0.6229
+
+
+grad_deg =
+
+  -15.4022
+   35.6890
+
+
+q =
+
+   81.8203
+  -45.5693
+
+iteration number 4 
+
+phi =
+
+    0.3585
+   -0.2815
+
+
+phiq =
+
+   -3.5337   -1.5996
+    0.5079   -1.5681
+
+
+grad =
+
+   -0.1593
+    0.1279
+
+
+grad_deg =
+
+   -9.1300
+    7.3274
+
+
+q =
+
+   90.9502
+  -52.8967
+
+iteration number 5 
+
+phi =
+
+    0.0082
+   -0.0587
+
+
+phiq =
+
+   -3.5695   -1.7865
+   -0.0592   -1.3513
+
+
+grad =
+
+   -0.0246
+    0.0445
+
+
+grad_deg =
+
+   -1.4085
+    2.5515
+
+
+q =
+
+   92.3587
+  -55.4481
+
+iteration number 6 
+
+phi =
+
+    0.0013
+   -0.0029
+
+
+phiq =
+
+   -3.5670   -1.8449
+   -0.1469   -1.2704
+
+
+grad =
+
+   -0.0016
+    0.0024
+
+
+grad_deg =
+
+   -0.0941
+    0.1403
+
+
+q =
+
+   92.4528
+  -55.5884
+
+iteration number 7 
+
+phi =
+
+   1.0e-04 *
+
+    0.0400
+   -0.1034
+
+
+phiq =
+
+   -3.5667   -1.8480
+   -0.1528   -1.2659
+
+
+grad =
+
+   1.0e-05 *
+
+   -0.5713
+    0.8859
+
+
+grad_deg =
+
+   1.0e-03 *
+
+   -0.3273
+    0.5076
+
+
+q =
+
+   92.4531
+  -55.5889
+
+iteration number 8 
+
+phi =
+
+   1.0e-09 *
+
+    0.0522
+   -0.1307
+
+
+phiq =
+
+   -3.5667   -1.8480
+   -0.1528   -1.2659
+
+
+grad =
+
+   1.0e-09 *
+
+   -0.0727
+    0.1120
+
+
+grad_deg =
+
+   1.0e-08 *
+
+   -0.4164
+    0.6419
+
+
+q =
+
+   92.4531
+  -55.5889
+
+iteration number 9 
+
+phi =
+
+   1.0e-15 *
+
+   -0.6661
+         0
+
+
+phiq =
+
+   -3.5667   -1.8480
+   -0.1528   -1.2659
+
+
+grad =
+
+   1.0e-15 *
+
+    0.1992
+   -0.0240
+
+
+grad_deg =
+
+   1.0e-13 *
+
+    0.1141
+   -0.0138
+
+
+q =
+
+   92.4531
+  -55.5889
+
+iteration number 10 
+
+phi =
+
+   1.0e-15 *
+
+    0.2220
+         0
+
+
+phiq =
+
+   -3.5667   -1.8480
+   -0.1528   -1.2659
+
+
+grad =
+
+   1.0e-16 *
+
+   -0.6641
+    0.0802
+
+
+grad_deg =
+
+   1.0e-14 *
+
+   -0.3805
+    0.0459
+
+
+q =
+
+   92.4531
+  -55.5889
+
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clc,clear,close
+
+%% Problem 1
+
+AB = 36; %in
+AC = 42; %in
+AD = 96; %in
+
+e = 40; %in
+edot = 12; %in/sec
+
+theta = acosd((-e^2 + AC^2 + AB^2)/(2*AB*AC))
+
+thetadot = (e*edot)/(AB*AC*sind(theta))
+
+%% Problem 2
+clc,clear,close all
+% syms theta3 theta4
+
+r1 = 90; %cm
+r2 = 30; %cm
+r3 = 60; %cm
+r4 = 45; %cm
+theta1 = 0; %deg
+theta2 = 10; %deg
+
+%initial theta1 and theta2 guesses
+theta3 = 0; %deg
+theta4 = 90; %deg
+
+q = [theta3 theta4]';
+
+iterations = 5;
+
+for i = 1:iterations
+    
+    fprintf('iteration number %i \n',i)
+
+    fh = r2*cosd(theta2) + r3*cosd(q(1)) - r4*cosd(q(2)) - r1*cosd(theta1);
+    fv = r2*sind(theta2) + r3*sind(q(1)) - r4*sind(q(2)) - r1*sind(theta1);
+
+    
+    phi = [fh fv]'
+
+    phiq = [-r3*sind(q(1)) r4*sind(q(2)); r3*cosd(q(1)) -r4*cosd(q(2))]
+
+    grad = phiq\phi
+    grad_deg = rad2deg(grad)
+    
+    q = q - grad_deg
+    
+end
+
+
+%% Four bar position check
+%using geometric four bar position equations to double check the answers
+%found the the previous problem
+clc,clear,close all
+
+r1 = 90; %cm
+r2 = 30; %cm
+r3 = 60; %cm
+r4 = 45; %cm
+theta1 = 0; %deg
+theta2 = 10; %deg
+
+%initial theta1 and theta2 guesses
+theta3 = 0; %deg
+theta4 = 90; %deg
+
+e = sqrt(r1^2 + r2^2 - 2*r1*r2*cosd(theta2));
+
+alpha = asind((r2*sind(theta2))/e);
+
+gamma = acosd((r3^2 + r4^2 - e^2)/(2*r3*r4));
+
+beta = asind((r3*sind(gamma))/e);
+
+theta4 = 180 - alpha - beta;
+theta3 = theta4 - gamma;
+
+theta3
+theta4
+
+
+%% Problem 3
+clc,clear,close all
+% syms theta3 theta4
+
+r1 = 4.07; %cm
+r2 = 1.6; %cm
+r3 = 3.57; %cm
+r4 = 2.24; %cm
+theta1 = 110.4; %deg
+theta2 = 270; %deg
+
+%initial theta1 and theta2 guesses
+theta3 = 0; %deg
+theta4 = 90; %deg
+
+q = [theta3 theta4]';
+
+iterations = 10;
+
+for i = 1:iterations
+    
+    fprintf('iteration number %i \n',i)
+
+    fh = r2*cosd(theta2) + r3*cosd(q(1)) - r4*cosd(q(2)) - r1*cosd(theta1);
+    fv = r2*sind(theta2) + r3*sind(q(1)) - r4*sind(q(2)) - r1*sind(theta1);
+
+    
+    phi = [fh fv]'
+
+    phiq = [-r3*sind(q(1)) r4*sind(q(2)); r3*cosd(q(1)) -r4*cosd(q(2))]
+
+    grad = phiq\phi
+    grad_deg = rad2deg(grad)
+    
+    q = q - grad_deg
+    
+end
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>
