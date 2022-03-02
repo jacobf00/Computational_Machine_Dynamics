@@ -17,7 +17,8 @@ theta4dotdot_sim = ddtheta4Table{:,2};
 
 
 
-%% Problem 2 - Four bar position check
+%% Geometric equation for Four bar position to compare to SW results
+%equations taken from Notes 03_01
 
 
 r1 = 13; %in
@@ -58,25 +59,41 @@ theta4dotdot = gradient(theta4dot,dt);
 
 %% Plot data
 
+%offset the data so theta2 properly starts at 0
+theta2_sim = theta2_sim - 360;
+theta2 = theta2 - 360;
 
 figure(1)
 subplot(3,1,1)
-plot(theta2_sim,theta4_sim,'o',theta2,theta4)
+plot(theta2_sim(26:76),theta4_sim(26:76),'o',theta2(26:76),theta4(26:76))
 xlabel('theta2 (deg)')
 ylabel('theta4 (deg)')
 title('Theta4 vs Theta2')
 legend('SolidWorks','Geometric')
 
 subplot(3,1,2)
-plot(theta2_sim,theta4dot_sim,'o',theta2,theta4dot)
+plot(theta2_sim(26:76),theta4dot_sim(26:76),'o',theta2(26:76),theta4dot(26:76))
 xlabel('theta2 (deg)')
 ylabel('theta4dot (deg/sec)')
 title('Theta4dot vs Theta2')
 legend('SolidWorks','Geometric')
 
 subplot(3,1,3)
-plot(theta2_sim,theta4dotdot_sim,'o',theta2,theta4dotdot)
+plot(theta2_sim(26:76),theta4dotdot_sim(26:76),'o',theta2(26:76),theta4dotdot(26:76))
 xlabel('theta2 (deg)')
 ylabel('theta4dotdot (deg/sec^2)')
 title('Theta4dotdot vs Theta2')
 legend('SolidWorks','Geometric')
+
+%% Problem 2 - Find max and min
+
+%grab the max and min values using function on the one revolution section
+%of solidworks data
+SW_max = max(theta4_sim(1:54))
+SW_min = min(theta4_sim(1:54))
+
+%grab max and min using same functions of corresponding geometric data
+geom_max = max(theta4(1:54))
+geom_min = min(theta4(1:54))
+
+fprintf('\nIt looks like the SolidWorks and geometric max and mins are almost identical, the SW motion analysis is very accurate\n.')

@@ -1,0 +1,281 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW8</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-03-02"><meta name="DC.source" content="HW8.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1></h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Problem 1 - import motion analysis data</a></li><li><a href="#2">Geometric equation for Four bar position to compare to SW results</a></li><li><a href="#3">Plot data</a></li><li><a href="#4">Problem 2 - Find max and min</a></li></ul></div><h2 id="1">Problem 1 - import motion analysis data</h2><pre class="codeinput">clc,clear,close <span class="string">all</span>
+
+theta4Table = readtable(<span class="string">'Link4-theta4.csv'</span>,<span class="string">'NumHeaderLines'</span>,2);
+dtheta4Table = readtable(<span class="string">'Link4-theta4dot.csv'</span>,<span class="string">'NumHeaderLines'</span>,2);
+ddtheta4Table = readtable(<span class="string">'Link4-theta4dotdot.csv'</span>,<span class="string">'NumHeaderLines'</span>,2);
+
+theta2_start = pi;
+t = theta4Table{:,1};
+theta2_sim = (30*((2*pi)/60))*t + theta2_start;
+theta2_sim = rad2deg(theta2_sim);
+
+theta4_sim = theta4Table{:,2} + 180;
+theta4dot_sim = dtheta4Table{:,2};
+theta4dotdot_sim = ddtheta4Table{:,2};
+</pre><h2 id="2">Geometric equation for Four bar position to compare to SW results</h2><pre class="codeinput"><span class="comment">%equations taken from Notes 03_01</span>
+
+
+r1 = 13; <span class="comment">%in</span>
+r2 = 4; <span class="comment">%in</span>
+r3 = 15; <span class="comment">%in</span>
+r4 = 20; <span class="comment">%in</span>
+<span class="comment">% theta1 = 0; %deg</span>
+<span class="comment">%{
+</span><span class="comment">the minimum theta4 occurs at theta2 = 90 deg, maximum theta4 occurs at theta2 = -90 deg
+</span><span class="comment">%}
+</span>
+theta2 = theta2_sim; <span class="comment">%deg</span>
+
+<span class="comment">%initial theta1 and theta2 guesses</span>
+<span class="comment">% theta3 = 0; %deg</span>
+<span class="comment">% theta4 = 90; %deg</span>
+theta4 = zeros(length(theta2),1);
+theta3 = zeros(length(theta2),1);
+<span class="comment">% count = 0;</span>
+<span class="keyword">for</span> i=1:length(theta2)
+<span class="comment">%     count = count + 1;</span>
+    e = sqrt(r1^2 + r2^2 - 2*r1*r2*cosd(theta2(i)));
+
+    alpha = asind((r2*sind(theta2(i)))/e);
+
+    gamma = acosd((r3^2 + r4^2 - e^2)/(2*r3*r4));
+
+    beta = asind((r3*sind(gamma))/e);
+
+    theta4(i) = 180 - alpha - beta;
+    theta3(i) = theta4(i) - gamma;
+
+<span class="keyword">end</span>
+
+dt = t(2) - t(1);
+theta4dot = gradient(theta4,dt);
+theta4dotdot = gradient(theta4dot,dt);
+</pre><h2 id="3">Plot data</h2><pre class="codeinput"><span class="comment">%offset the data so theta2 properly starts at 0</span>
+theta2_sim = theta2_sim - 360;
+theta2 = theta2 - 360;
+
+figure(1)
+subplot(3,1,1)
+plot(theta2_sim(26:76),theta4_sim(26:76),<span class="string">'o'</span>,theta2(26:76),theta4(26:76))
+xlabel(<span class="string">'theta2 (deg)'</span>)
+ylabel(<span class="string">'theta4 (deg)'</span>)
+title(<span class="string">'Theta4 vs Theta2'</span>)
+legend(<span class="string">'SolidWorks'</span>,<span class="string">'Geometric'</span>)
+
+subplot(3,1,2)
+plot(theta2_sim(26:76),theta4dot_sim(26:76),<span class="string">'o'</span>,theta2(26:76),theta4dot(26:76))
+xlabel(<span class="string">'theta2 (deg)'</span>)
+ylabel(<span class="string">'theta4dot (deg/sec)'</span>)
+title(<span class="string">'Theta4dot vs Theta2'</span>)
+legend(<span class="string">'SolidWorks'</span>,<span class="string">'Geometric'</span>)
+
+subplot(3,1,3)
+plot(theta2_sim(26:76),theta4dotdot_sim(26:76),<span class="string">'o'</span>,theta2(26:76),theta4dotdot(26:76))
+xlabel(<span class="string">'theta2 (deg)'</span>)
+ylabel(<span class="string">'theta4dotdot (deg/sec^2)'</span>)
+title(<span class="string">'Theta4dotdot vs Theta2'</span>)
+legend(<span class="string">'SolidWorks'</span>,<span class="string">'Geometric'</span>)
+</pre><img vspace="5" hspace="5" src="HW8_01.png" alt=""> <h2 id="4">Problem 2 - Find max and min</h2><pre class="codeinput"><span class="comment">%grab the max and min values using function on the one revolution section</span>
+<span class="comment">%of solidworks data</span>
+SW_max = max(theta4_sim(1:54))
+SW_min = min(theta4_sim(1:54))
+
+<span class="comment">%grab max and min using same functions of corresponding geometric data</span>
+geom_max = max(theta4(1:54))
+geom_min = min(theta4(1:54))
+
+fprintf(<span class="string">'\nIt looks like the SolidWorks and geometric max and mins are almost identical, the SW motion analysis is very accurate\n.'</span>)
+</pre><pre class="codeoutput">
+SW_max =
+
+  149.4753
+
+
+SW_min =
+
+  113.6051
+
+
+geom_max =
+
+  149.4753
+
+
+geom_min =
+
+  113.6051
+
+
+It looks like the SolidWorks and geometric max and mins are almost identical, the SW motion analysis is very accurate
+.</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+
+%% Problem 1 - import motion analysis data
+clc,clear,close all
+
+theta4Table = readtable('Link4-theta4.csv','NumHeaderLines',2);
+dtheta4Table = readtable('Link4-theta4dot.csv','NumHeaderLines',2);
+ddtheta4Table = readtable('Link4-theta4dotdot.csv','NumHeaderLines',2);
+
+theta2_start = pi;
+t = theta4Table{:,1};
+theta2_sim = (30*((2*pi)/60))*t + theta2_start;
+theta2_sim = rad2deg(theta2_sim);
+
+theta4_sim = theta4Table{:,2} + 180;
+theta4dot_sim = dtheta4Table{:,2};
+theta4dotdot_sim = ddtheta4Table{:,2};
+
+
+
+%% Geometric equation for Four bar position to compare to SW results
+%equations taken from Notes 03_01
+
+
+r1 = 13; %in
+r2 = 4; %in
+r3 = 15; %in
+r4 = 20; %in
+% theta1 = 0; %deg
+%{
+the minimum theta4 occurs at theta2 = 90 deg, maximum theta4 occurs at theta2 = -90 deg
+%}
+ 
+theta2 = theta2_sim; %deg
+
+%initial theta1 and theta2 guesses
+% theta3 = 0; %deg
+% theta4 = 90; %deg
+theta4 = zeros(length(theta2),1);
+theta3 = zeros(length(theta2),1);
+% count = 0;
+for i=1:length(theta2)
+%     count = count + 1;
+    e = sqrt(r1^2 + r2^2 - 2*r1*r2*cosd(theta2(i)));
+
+    alpha = asind((r2*sind(theta2(i)))/e);
+
+    gamma = acosd((r3^2 + r4^2 - e^2)/(2*r3*r4));
+
+    beta = asind((r3*sind(gamma))/e);
+
+    theta4(i) = 180 - alpha - beta;
+    theta3(i) = theta4(i) - gamma;
+
+end
+
+dt = t(2) - t(1);
+theta4dot = gradient(theta4,dt);
+theta4dotdot = gradient(theta4dot,dt);
+
+%% Plot data
+
+%offset the data so theta2 properly starts at 0
+theta2_sim = theta2_sim - 360;
+theta2 = theta2 - 360;
+
+figure(1)
+subplot(3,1,1)
+plot(theta2_sim(26:76),theta4_sim(26:76),'o',theta2(26:76),theta4(26:76))
+xlabel('theta2 (deg)')
+ylabel('theta4 (deg)')
+title('Theta4 vs Theta2')
+legend('SolidWorks','Geometric')
+
+subplot(3,1,2)
+plot(theta2_sim(26:76),theta4dot_sim(26:76),'o',theta2(26:76),theta4dot(26:76))
+xlabel('theta2 (deg)')
+ylabel('theta4dot (deg/sec)')
+title('Theta4dot vs Theta2')
+legend('SolidWorks','Geometric')
+
+subplot(3,1,3)
+plot(theta2_sim(26:76),theta4dotdot_sim(26:76),'o',theta2(26:76),theta4dotdot(26:76))
+xlabel('theta2 (deg)')
+ylabel('theta4dotdot (deg/sec^2)')
+title('Theta4dotdot vs Theta2')
+legend('SolidWorks','Geometric')
+
+%% Problem 2 - Find max and min
+
+%grab the max and min values using function on the one revolution section
+%of solidworks data
+SW_max = max(theta4_sim(1:54))
+SW_min = min(theta4_sim(1:54))
+
+%grab max and min using same functions of corresponding geometric data
+geom_max = max(theta4(1:54))
+geom_min = min(theta4(1:54))
+
+fprintf('\nIt looks like the SolidWorks and geometric max and mins are almost identical, the SW motion analysis is very accurate\n.')
+##### SOURCE END #####
+--></body></html>
