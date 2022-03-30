@@ -1,0 +1,360 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW10</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-03-23"><meta name="DC.source" content="HW10.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Problem 2</a></li><li><a href="#2">Problem 3</a></li><li><a href="#3">Problem 4</a></li></ul></div><h2 id="1">Problem 2</h2><pre class="codeinput">clc,clear,close <span class="string">all</span>
+
+g = 386.088; <span class="comment">%in/sec^2</span>
+m3 = .462; <span class="comment">%lbm</span>
+L = 4.33; <span class="comment">%in</span>
+a = 3.642; <span class="comment">%in</span>
+IDc = .707; <span class="comment">%in</span>
+
+tau = [13.69 13.67 13.64 13.67 13.66 13.76 13.74 13.73 13.79 13.67];
+
+tau = (1/20)*tau;
+
+<span class="comment">%calculate tau,sigma, and 100*sigma/tau</span>
+sigma = std(tau)
+
+tau = mean(tau)
+
+sigma_tau = 100*sigma/tau
+
+<span class="comment">%calculate JG3</span>
+
+JG3 = (m3*g*a*tau^2)/(4*pi^2) - m3*a^2
+</pre><pre class="codeoutput">
+sigma =
+
+    0.0025
+
+
+tau =
+
+    0.6851
+
+
+sigma_tau =
+
+    0.3621
+
+
+JG3 =
+
+    1.5955
+
+</pre><h2 id="2">Problem 3</h2><pre class="codeinput">syms <span class="string">m3B</span> <span class="string">m3C</span>
+
+CG3 = a - IDc/2 <span class="comment">%in</span>
+BG3 = L - CG3 <span class="comment">%in</span>
+
+Moment_eq = m3B*BG3 - m3C*CG3 == 0;
+total_mass_eq = m3B + m3C == m3;
+
+sol = solve([Moment_eq total_mass_eq],[m3B m3C]);
+
+m3B_sol = double(sol.m3B) <span class="comment">%lbm</span>
+m3C_sol = double(sol.m3C) <span class="comment">%lbm</span>
+
+JAPP = m3B_sol*BG3^2 + m3C_sol*CG3^2 <span class="comment">%lbm*in^2</span>
+</pre><pre class="codeoutput">
+CG3 =
+
+    3.2885
+
+
+BG3 =
+
+    1.0415
+
+
+m3B_sol =
+
+    0.3509
+
+
+m3C_sol =
+
+    0.1111
+
+
+JAPP =
+
+    1.5823
+
+</pre><h2 id="3">Problem 4</h2><pre class="codeinput">clc,clear,close <span class="string">all</span>
+
+load(<span class="string">'conn_rod_CCW.txt'</span>)
+load(<span class="string">'hole_B_CCW.txt'</span>)
+load(<span class="string">'hole_C_CCW.txt'</span>)
+
+d2r = pi / 180;
+
+t = .75; <span class="comment">%in</span>
+rho = 0.0975437; <span class="comment">%lbm/in^3</span>
+
+<span class="comment">%reverse direction of hole numbers</span>
+hole_B_CW = zeros(size(hole_B_CCW));
+hole_B_CW(:,1) = hole_B_CCW(end:-1:1,1);
+hole_B_CW(:,2) = hole_B_CCW(end:-1:1,2);
+
+hole_C_CW = zeros(size(hole_C_CCW));
+hole_C_CW(:,1) = hole_C_CCW(end:-1:1,1);
+hole_C_CW(:,2) = hole_C_CCW(end:-1:1,2);
+
+x = [conn_rod_CCW(:,1)' hole_B_CW(:,1)' hole_C_CW(:,1)' conn_rod_CCW(1,1)];
+y = [conn_rod_CCW(:,2)' hole_B_CW(:,2)' hole_C_CW(:,2)' conn_rod_CCW(1,2)];
+
+[ geom, iner, cpmo ] = polygeom( x, y );
+
+area = geom(1);
+x_cen = geom(2);
+y_cen = geom(3);
+perimeter = geom(4);
+disp( [ <span class="string">' '</span> ] )
+disp( [ <span class="string">'Connecting Rod 3'</span> ] )
+disp( [ <span class="string">' '</span> ] )
+disp( [ <span class="string">' area x_cen y_cen perim'</span> ] )
+disp( [ area x_cen y_cen perimeter ] )
+I1 = cpmo(1);
+angle1 = cpmo(2);
+I2 = cpmo(3);
+angle2 = cpmo(4);
+disp( [ <span class="string">' '</span> ] )
+disp( [ <span class="string">' I1 I2'</span> ] )
+disp( [ I1 I2 ] )
+disp( [ <span class="string">' angle1 angle2'</span> ] )
+disp( [ angle1/d2r angle2/d2r ] )
+<span class="comment">% plot outline</span>
+xplot = x( [ 1:end 1] );
+yplot = y( [ 1:end 1] );
+rad = 10;
+x1 = [ x_cen-rad*cos(angle1) x_cen+rad*cos(angle1) ];
+y1 = [ y_cen-rad*sin(angle1) y_cen+rad*sin(angle1) ];
+x2 = [ x_cen-rad*cos(angle2) x_cen+rad*cos(angle2) ];
+y2 = [ y_cen-rad*sin(angle2) y_cen+rad*sin(angle2) ];
+plot( xplot,yplot,<span class="string">'b'</span>, x_cen,y_cen,<span class="string">'r+'</span>, <span class="keyword">...</span>
+ x1,y1,<span class="string">'g:'</span>, x2,y2,<span class="string">'g:'</span> )
+axis( [ 0 rad 0 rad ] )
+axis <span class="string">square</span>
+xlim([-2 6])
+ylim([-4 4])
+
+m3 = geom(1)*t*rho
+
+<span class="comment">%BG3 from plot</span>
+BG3 = x_cen
+
+<span class="comment">%Calculate controidal polar mass mmoent of intertia from centroidal polar</span>
+<span class="comment">%area moment of inertia</span>
+
+J_boundary = t*rho*cpmo(5)
+</pre><pre class="codeoutput"> 
+Connecting Rod 3
+ 
+ area x_cen y_cen perim
+    6.1005    1.1136    0.0183   30.9068
+
+ 
+ I1 I2
+    2.5231   13.8603
+
+ angle1 angle2
+ -178.7802   91.2198
+
+
+m3 =
+
+    0.4463
+
+
+BG3 =
+
+    1.1136
+
+
+J_boundary =
+
+    1.1986
+
+</pre><img vspace="5" hspace="5" src="HW10_01.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Problem 2
+clc,clear,close all
+
+g = 386.088; %in/sec^2
+m3 = .462; %lbm
+L = 4.33; %in
+a = 3.642; %in
+IDc = .707; %in
+
+tau = [13.69 13.67 13.64 13.67 13.66 13.76 13.74 13.73 13.79 13.67];
+
+tau = (1/20)*tau;
+
+%calculate tau,sigma, and 100*sigma/tau
+sigma = std(tau)
+
+tau = mean(tau)
+
+sigma_tau = 100*sigma/tau
+
+%calculate JG3
+
+JG3 = (m3*g*a*tau^2)/(4*pi^2) - m3*a^2
+
+%% Problem 3
+syms m3B m3C
+
+CG3 = a - IDc/2 %in
+BG3 = L - CG3 %in
+
+Moment_eq = m3B*BG3 - m3C*CG3 == 0;
+total_mass_eq = m3B + m3C == m3;
+
+sol = solve([Moment_eq total_mass_eq],[m3B m3C]);
+
+m3B_sol = double(sol.m3B) %lbm
+m3C_sol = double(sol.m3C) %lbm
+
+JAPP = m3B_sol*BG3^2 + m3C_sol*CG3^2 %lbm*in^2
+
+
+%% Problem 4
+clc,clear,close all
+
+load('conn_rod_CCW.txt')
+load('hole_B_CCW.txt')
+load('hole_C_CCW.txt')
+
+d2r = pi / 180;
+
+t = .75; %in
+rho = 0.0975437; %lbm/in^3
+
+%reverse direction of hole numbers
+hole_B_CW = zeros(size(hole_B_CCW));
+hole_B_CW(:,1) = hole_B_CCW(end:-1:1,1);
+hole_B_CW(:,2) = hole_B_CCW(end:-1:1,2);
+
+hole_C_CW = zeros(size(hole_C_CCW));
+hole_C_CW(:,1) = hole_C_CCW(end:-1:1,1);
+hole_C_CW(:,2) = hole_C_CCW(end:-1:1,2);
+
+x = [conn_rod_CCW(:,1)' hole_B_CW(:,1)' hole_C_CW(:,1)' conn_rod_CCW(1,1)];
+y = [conn_rod_CCW(:,2)' hole_B_CW(:,2)' hole_C_CW(:,2)' conn_rod_CCW(1,2)];
+
+[ geom, iner, cpmo ] = polygeom( x, y );
+
+area = geom(1);
+x_cen = geom(2);
+y_cen = geom(3);
+perimeter = geom(4);
+disp( [ ' ' ] )
+disp( [ 'Connecting Rod 3' ] )
+disp( [ ' ' ] )
+disp( [ ' area x_cen y_cen perim' ] )
+disp( [ area x_cen y_cen perimeter ] )
+I1 = cpmo(1);
+angle1 = cpmo(2);
+I2 = cpmo(3);
+angle2 = cpmo(4);
+disp( [ ' ' ] )
+disp( [ ' I1 I2' ] )
+disp( [ I1 I2 ] )
+disp( [ ' angle1 angle2' ] )
+disp( [ angle1/d2r angle2/d2r ] )
+% plot outline
+xplot = x( [ 1:end 1] );
+yplot = y( [ 1:end 1] );
+rad = 10;
+x1 = [ x_cen-rad*cos(angle1) x_cen+rad*cos(angle1) ];
+y1 = [ y_cen-rad*sin(angle1) y_cen+rad*sin(angle1) ];
+x2 = [ x_cen-rad*cos(angle2) x_cen+rad*cos(angle2) ];
+y2 = [ y_cen-rad*sin(angle2) y_cen+rad*sin(angle2) ];
+plot( xplot,yplot,'b', x_cen,y_cen,'r+', ...
+ x1,y1,'g:', x2,y2,'g:' )
+axis( [ 0 rad 0 rad ] )
+axis square
+xlim([-2 6])
+ylim([-4 4])
+
+m3 = geom(1)*t*rho
+
+%BG3 from plot
+BG3 = x_cen
+
+%Calculate controidal polar mass mmoent of intertia from centroidal polar
+%area moment of inertia
+
+J_boundary = t*rho*cpmo(5)
+
+
+##### SOURCE END #####
+--></body></html>
