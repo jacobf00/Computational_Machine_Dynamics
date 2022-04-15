@@ -3,6 +3,7 @@ clc,clear,close all
 
 data = load('Pendulum.dta');
 data_large = load('Pendulum_large.dta');
+data_slider = load('SliderCrank.dta');
 
 t = data(:,1);
 theta = -(data(:,2) - 270);
@@ -11,6 +12,9 @@ thetadotdot = -data(:,4) * (pi/180);
 
 t_large = data_large(:,1);
 thetadotdot_large = -data_large(:,4) * (pi/180);
+
+t_slider = data_slider(:,1);
+thetadotdot_slider = data_slider(:,4);
 
 %period of oscillation calculation from notes
 m = .46; %lbm
@@ -158,3 +162,55 @@ subplot( 3,1,3 )
  xlabel( 'Frequency [Hz]' )
  ylabel( 'Phase [deg]' )
  xlim([0 30])
+ 
+ %% Extra credit
+
+ h_slider = 0.001; % time step [sec]
+% f_synthetic = 30; % synthetic frequency [Hz]
+% x_max = 5; % size synthetic signal [mm]
+% t2 = [ 0:(1999) ]' * h; % synthetic time [sec]
+% x = x_max * sin( 2 * pi * f_synthetic * t2 ); % synthetic signal [mm]
+% bottom - creating synthetic signal
+% synthetic square wave
+%x = sign( x );
+% find number of samples and sampling frequency
+n_slider = length( thetadotdot_slider ); % number of samples
+fs_slider = 1 / h_slider; % sampling frequency [Hz]
+% FFT
+% MATLAB FFT must be scaled by 2/n - DC component must be scaled scaled by 1/n
+a_slider = fft(thetadotdot_slider) * 2 / n_slider; % complex number - units [mm]
+a_slider(1) = a_slider(1) / 2; % offset at frequency of 0 Hz [mm]
+a_slider(end) = a_slider(end) / 2;
+amp_slider = abs( a_slider ); % amplitude at each frequency [mm]
+phase_slider = angle( a_slider ) * 180 / pi; % phase angle [deg]
+df_slider = fs_slider / n_slider; % frequency resolution between spectral bands [Hz]
+freq_slider = [ 0:(n_slider-1) ]' * df_slider; % all frequencies [Hz]
+% find peaks and list
+[ peaks_slider, i_locations_slider ] = findpeaks( amp_slider, 'MinPeakHeight', 0.1 ); % ignore tiny values
+disp( ' ' )
+disp( ' freq [Hz] peak [in/sec^2]' )
+disp( [ freq_slider(i_locations_slider) peaks_slider ] ) % units [Hz] [mm]
+% plot time domain, amplitude, phase
+
+%Determine natural frequency from fft using peak i location
+wn_slider = freq_slider(i_locations_slider(1));
+fprintf('The peak amplitude of the piston signal occurs around %.3f Hz which would be the signal''s natural frequency\n',wn_slider)
+tau_fft_slider = 1/wn_slider;
+fprintf('The period of oscillation of the piston signal determined from the fft would be %.3f sec\n',tau_fft_slider)
+
+figure( 5 )
+subplot( 3,1,1 ) 
+ plot( t_slider, thetadotdot_slider )
+ xlabel( 'Time (sec)' )
+ ylabel( 'Signal [rad/s^2]' )
+ title('fft of slider crank')
+subplot( 3,1,2 )
+ plot( freq_slider, log(amp_slider) )
+ xlabel( 'Frequency [Hz]' )
+ ylabel( 'Log Amplitude [in/s^2]' )
+ xlim([0 100])
+subplot( 3,1,3 )
+ plot( freq_slider, log(phase_slider) )
+ xlabel( 'Frequency [Hz]' )
+ ylabel( 'Log Phase [deg]' )
+ xlim([0 100])
