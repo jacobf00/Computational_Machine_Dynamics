@@ -1,0 +1,534 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW11</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-03-30"><meta name="DC.source" content="HW11.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Problem 2</a></li><li><a href="#2">Problem 3</a></li><li><a href="#3">Problem 4</a></li><li><a href="#4">Problem 5</a></li></ul></div><h2 id="1">Problem 2</h2><pre class="codeinput">clc,clear,close <span class="string">all</span>
+
+data = load(<span class="string">'SliderCrank.dta'</span>);
+
+theta = data(:,2);
+T1on2_sim = -data(:,4);
+T1on2_sim(1) = 0;
+t = data(:,1);
+dt = t(2) - t(1);
+
+thetadot = gradient(theta)/dt;
+thetadot = 1000*(2*pi/60); <span class="comment">%rad/sec</span>
+
+R = .985; <span class="comment">%in</span>
+L = 4.33; <span class="comment">%in</span>
+m3B = 0.3509; <span class="comment">%lbm</span>
+m3C = 0.1111; <span class="comment">%lbm</span>
+
+m3 = m3B + m3C;
+
+m4 = .781; <span class="comment">%lbm</span>
+BG3 = 1.043; <span class="comment">%in</span>
+JG3 = 1.5; <span class="comment">%lbm*in^2</span>
+
+
+T1on2 = -.5*(m3C + m4)*R^2*thetadot.^2.*((R/(2*L))*sin(theta) - sin(2*theta) - ((3*R)/(2*L))*sin(3*theta));
+
+T1on2 = (1/386)*T1on2; <span class="comment">%lbf*in</span>
+
+step = 10;
+
+figure(1)
+plot(theta(1:step:end),T1on2_sim(1:step:end),<span class="string">'ro'</span>,theta,T1on2,<span class="string">'b'</span>)
+xlabel(<span class="string">'theta2 (rad)'</span>)
+ylabel(<span class="string">'T1on2 (lbf*in)'</span>)
+title(<span class="string">'Crank Torque vs Crank Angle'</span>)
+legend(<span class="string">'Simulation'</span>,<span class="string">'Analytical'</span>)
+</pre><img vspace="5" hspace="5" src="HW11_01.png" alt=""> <h2 id="2">Problem 3</h2><pre class="codeinput">clc,clear, close <span class="string">all</span>
+
+R = .985; <span class="comment">%in</span>
+L = 4.33; <span class="comment">%in</span>
+m3B = 0.3509; <span class="comment">%lbm</span>
+m3C = 0.1111; <span class="comment">%lbm</span>
+
+m3 = m3B + m3C;
+
+m4 = .781; <span class="comment">%lbm</span>
+BG3 = 1.043; <span class="comment">%in</span>
+JG3 = 1.5; <span class="comment">%lbm*in^2</span>
+mBAL = 0; <span class="comment">%lbm</span>
+g = 386.088; <span class="comment">%in/sec^2</span>
+
+
+
+data = load(<span class="string">'SliderCrank_Shaking.dta'</span>);
+
+t = data(:,1);
+dt = t(2) - t(1); <span class="comment">%sec</span>
+
+theta0 = 0; <span class="comment">%rad</span>
+thetadot = 1000*(2*pi/60); <span class="comment">%rad/sec</span>
+theta = thetadot*t + theta0; <span class="comment">%rad</span>
+phi = asin((R/L)*sin(theta));
+s = R*cos(theta) + L*cos(phi);
+
+sdot = gradient(s)/dt;
+sdotdot = gradient(sdot)/dt;
+
+Fx2on1_sim = -data(:,6);
+Fx2on1_sim(1) = Fx2on1_sim(2);
+
+Fy2on1_sim = -data(:,7);
+Fy2on1_sim(1) = Fy2on1_sim(2);
+
+Fy4on1_sim = -data(:,3);
+Fy4on1_sim(1) = Fy4on1_sim(2);
+
+<span class="comment">% Fx2on1 = (m3B - mBAL)*R*thetadot.^2.*cos(theta) - (m3C + m4)*sdotdot;</span>
+<span class="comment">%</span>
+<span class="comment">% Fy2on1 = (m3B - mBAL)*R*thetadot.^2.*sin(theta) + (m3C + m4)*sdotdot.*tan(phi);</span>
+<span class="comment">% Fy4on1 = -(m3C + m4)*sdotdot.*tan(phi);</span>
+
+<span class="comment">%matrix equation</span>
+Fx = R*thetadot^2*((m3B - mBAL)*cos(theta) + (m3C + m4)*(cos(theta) + (R/L)*cos(2*theta)))/g;
+
+Fy = R*thetadot^2*((m3B - mBAL)*sin(theta))/g;
+
+step = 20;
+
+figure(2)
+<span class="comment">% plot(Fx2on1,Fy2on1+Fy4on1,'b',Fx2on1_sim,Fy2on1_sim+Fy4on1_sim,'ro')</span>
+plot(Fx,Fy,<span class="string">'b'</span>,Fx2on1_sim(1:step:end),Fy2on1_sim(1:step:end)+Fy4on1_sim(1:step:end),<span class="string">'ro'</span>)
+<span class="comment">% plot(Fx,Fy,'b')</span>
+xlabel(<span class="string">'X Shaking Force (lbf)'</span>)
+ylabel(<span class="string">'Y Shaking Force (lbf)'</span>)
+title(<span class="string">'Y Shaking Force vs X Shaking Force (mBAL = 0)'</span>)
+legend(<span class="string">'Analytical'</span>,<span class="string">'Simulation'</span>)
+</pre><img vspace="5" hspace="5" src="HW11_02.png" alt=""> <h2 id="3">Problem 4</h2><pre class="codeinput">clc,clear, close <span class="string">all</span>
+
+R = .985; <span class="comment">%in</span>
+L = 4.33; <span class="comment">%in</span>
+m3B = 0.3509; <span class="comment">%lbm</span>
+m3C = 0.1111; <span class="comment">%lbm</span>
+
+m3 = m3B + m3C;
+
+m4 = .781; <span class="comment">%lbm</span>
+BG3 = 1.043; <span class="comment">%in</span>
+JG3 = 1.5; <span class="comment">%lbm*in^2</span>
+mBAL = m3B; <span class="comment">%lbm</span>
+g = 386.088; <span class="comment">%in/sec^2</span>
+
+
+
+data = load(<span class="string">'SliderCrank_Shaking2.dta'</span>);
+
+t = data(:,1);
+dt = t(2) - t(1); <span class="comment">%sec</span>
+
+theta0 = 0; <span class="comment">%rad</span>
+thetadot = 1000*(2*pi/60); <span class="comment">%rad/sec</span>
+theta = thetadot*t + theta0; <span class="comment">%rad</span>
+phi = asin((R/L)*sin(theta));
+s = R*cos(theta) + L*cos(phi);
+
+sdot = gradient(s)/dt;
+sdotdot = gradient(sdot)/dt;
+
+Fx2on1_sim = -data(:,2);
+Fx2on1_sim(1) = Fx2on1_sim(2);
+
+Fy2on1_sim = -data(:,3);
+Fy2on1_sim(1) = Fy2on1_sim(2);
+
+Fy4on1_sim = -data(:,7);
+Fy4on1_sim(1) = Fy4on1_sim(2);
+
+<span class="comment">% Fx2on1 = (m3B - mBAL)*R*thetadot.^2.*cos(theta) - (m3C + m4)*sdotdot;</span>
+<span class="comment">%</span>
+<span class="comment">% Fy2on1 = (m3B - mBAL)*R*thetadot.^2.*sin(theta) + (m3C + m4)*sdotdot.*tan(phi);</span>
+<span class="comment">% Fy4on1 = -(m3C + m4)*sdotdot.*tan(phi);</span>
+
+<span class="comment">%matrix equation</span>
+Fx = R*thetadot^2*((m3B - mBAL)*cos(theta) + (m3C + m4)*(cos(theta) + (R/L)*cos(2*theta)))/g;
+
+Fy = R*thetadot^2*((m3B - mBAL)*sin(theta))/g;
+
+step = 20;
+
+figure(3)
+<span class="comment">% plot(Fx2on1,Fy2on1+Fy4on1,'b',Fx2on1_sim,Fy2on1_sim+Fy4on1_sim,'ro')</span>
+plot(Fx,Fy,<span class="string">'b'</span>,Fx2on1_sim(1:step:end),Fy2on1_sim(1:step:end)+Fy4on1_sim(1:step:end),<span class="string">'ro'</span>)
+<span class="comment">% plot(Fx,Fy,'b')</span>
+xlabel(<span class="string">'X Shaking Force (lbf)'</span>)
+ylabel(<span class="string">'Y Shaking Force (lbf)'</span>)
+title(<span class="string">'Y Shaking Force vs X Shaking Force (mBAL = m3B)'</span>)
+legend(<span class="string">'Analytical'</span>,<span class="string">'Simulation'</span>)
+ylim([-10 10])
+</pre><img vspace="5" hspace="5" src="HW11_03.png" alt=""> <h2 id="4">Problem 5</h2><pre class="codeinput">clc,clear, close <span class="string">all</span>
+
+R = .985; <span class="comment">%in</span>
+L = 4.33; <span class="comment">%in</span>
+m3B = 0.3509; <span class="comment">%lbm</span>
+m3C = 0.1111; <span class="comment">%lbm</span>
+
+m3 = m3B + m3C;
+
+m4 = .781; <span class="comment">%lbm</span>
+BG3 = 1.043; <span class="comment">%in</span>
+JG3 = 1.5; <span class="comment">%lbm*in^2</span>
+mBAL = m3C + m4; <span class="comment">%lbm</span>
+g = 386.088; <span class="comment">%in/sec^2</span>
+
+
+
+data = load(<span class="string">'SliderCrank_Shaking3.dta'</span>);
+
+t = data(:,1);
+dt = t(2) - t(1); <span class="comment">%sec</span>
+
+theta0 = 0; <span class="comment">%rad</span>
+thetadot = 1000*(2*pi/60); <span class="comment">%rad/sec</span>
+theta = thetadot*t + theta0; <span class="comment">%rad</span>
+phi = asin((R/L)*sin(theta));
+s = R*cos(theta) + L*cos(phi);
+
+sdot = gradient(s)/dt;
+sdotdot = gradient(sdot)/dt;
+
+Fx2on1_sim = -data(:,2);
+Fx2on1_sim(1) = Fx2on1_sim(2);
+
+Fy2on1_sim = -data(:,3);
+Fy2on1_sim(1) = Fy2on1_sim(2);
+
+Fy4on1_sim = -data(:,7);
+Fy4on1_sim(1) = Fy4on1_sim(2);
+
+<span class="comment">% Fx2on1 = (m3B - mBAL)*R*thetadot.^2.*cos(theta) - (m3C + m4)*sdotdot;</span>
+<span class="comment">%</span>
+<span class="comment">% Fy2on1 = (m3B - mBAL)*R*thetadot.^2.*sin(theta) + (m3C + m4)*sdotdot.*tan(phi);</span>
+<span class="comment">% Fy4on1 = -(m3C + m4)*sdotdot.*tan(phi);</span>
+
+<span class="comment">%matrix equation</span>
+Fx = R*thetadot^2*((m3B - mBAL)*cos(theta) + (m3C + m4)*(cos(theta) + (R/L)*cos(2*theta)))/g;
+
+Fy = R*thetadot^2*((m3B - mBAL)*sin(theta))/g;
+
+step = 20;
+
+figure(3)
+<span class="comment">% plot(Fx2on1,Fy2on1+Fy4on1,'b',Fx2on1_sim,Fy2on1_sim+Fy4on1_sim,'ro')</span>
+plot(Fx,Fy,<span class="string">'b'</span>,Fx2on1_sim(1:step:end),Fy2on1_sim(1:step:end)+Fy4on1_sim(1:step:end),<span class="string">'ro'</span>)
+<span class="comment">% plot(Fx,Fy,'b')</span>
+xlabel(<span class="string">'X Shaking Force (lbf)'</span>)
+ylabel(<span class="string">'Y Shaking Force (lbf)'</span>)
+title(<span class="string">'Y Shaking Force vs X Shaking Force (mBAL = m3C + m4)'</span>)
+legend(<span class="string">'Analytical'</span>,<span class="string">'Simulation'</span>)
+
+Fs_analytical = max(Fx)
+Fs_sim = max(Fx2on1_sim)
+</pre><pre class="codeoutput">
+Fs_analytical =
+
+   15.4949
+
+
+Fs_sim =
+
+   15.4952
+
+</pre><img vspace="5" hspace="5" src="HW11_04.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Problem 2
+
+clc,clear,close all
+
+data = load('SliderCrank.dta');
+
+theta = data(:,2);
+T1on2_sim = -data(:,4);
+T1on2_sim(1) = 0;
+t = data(:,1);
+dt = t(2) - t(1);
+
+thetadot = gradient(theta)/dt;
+thetadot = 1000*(2*pi/60); %rad/sec
+
+R = .985; %in
+L = 4.33; %in
+m3B = 0.3509; %lbm
+m3C = 0.1111; %lbm
+
+m3 = m3B + m3C;
+
+m4 = .781; %lbm
+BG3 = 1.043; %in
+JG3 = 1.5; %lbm*in^2
+
+
+T1on2 = -.5*(m3C + m4)*R^2*thetadot.^2.*((R/(2*L))*sin(theta) - sin(2*theta) - ((3*R)/(2*L))*sin(3*theta));
+
+T1on2 = (1/386)*T1on2; %lbf*in
+
+step = 10;
+
+figure(1)
+plot(theta(1:step:end),T1on2_sim(1:step:end),'ro',theta,T1on2,'b')
+xlabel('theta2 (rad)')
+ylabel('T1on2 (lbf*in)')
+title('Crank Torque vs Crank Angle')
+legend('Simulation','Analytical')
+
+%% Problem 3
+clc,clear, close all
+
+R = .985; %in
+L = 4.33; %in
+m3B = 0.3509; %lbm
+m3C = 0.1111; %lbm
+
+m3 = m3B + m3C;
+
+m4 = .781; %lbm
+BG3 = 1.043; %in
+JG3 = 1.5; %lbm*in^2
+mBAL = 0; %lbm
+g = 386.088; %in/sec^2
+
+
+
+data = load('SliderCrank_Shaking.dta');
+
+t = data(:,1);
+dt = t(2) - t(1); %sec
+
+theta0 = 0; %rad
+thetadot = 1000*(2*pi/60); %rad/sec
+theta = thetadot*t + theta0; %rad
+phi = asin((R/L)*sin(theta));
+s = R*cos(theta) + L*cos(phi);
+
+sdot = gradient(s)/dt;
+sdotdot = gradient(sdot)/dt;
+
+Fx2on1_sim = -data(:,6);
+Fx2on1_sim(1) = Fx2on1_sim(2);
+
+Fy2on1_sim = -data(:,7);
+Fy2on1_sim(1) = Fy2on1_sim(2);
+
+Fy4on1_sim = -data(:,3);
+Fy4on1_sim(1) = Fy4on1_sim(2);
+
+% Fx2on1 = (m3B - mBAL)*R*thetadot.^2.*cos(theta) - (m3C + m4)*sdotdot;
+% 
+% Fy2on1 = (m3B - mBAL)*R*thetadot.^2.*sin(theta) + (m3C + m4)*sdotdot.*tan(phi);
+% Fy4on1 = -(m3C + m4)*sdotdot.*tan(phi);
+
+%matrix equation
+Fx = R*thetadot^2*((m3B - mBAL)*cos(theta) + (m3C + m4)*(cos(theta) + (R/L)*cos(2*theta)))/g;
+
+Fy = R*thetadot^2*((m3B - mBAL)*sin(theta))/g;
+
+step = 20;
+
+figure(2)
+% plot(Fx2on1,Fy2on1+Fy4on1,'b',Fx2on1_sim,Fy2on1_sim+Fy4on1_sim,'ro')
+plot(Fx,Fy,'b',Fx2on1_sim(1:step:end),Fy2on1_sim(1:step:end)+Fy4on1_sim(1:step:end),'ro')
+% plot(Fx,Fy,'b')
+xlabel('X Shaking Force (lbf)')
+ylabel('Y Shaking Force (lbf)')
+title('Y Shaking Force vs X Shaking Force (mBAL = 0)')
+legend('Analytical','Simulation')
+
+%% Problem 4
+clc,clear, close all
+
+R = .985; %in
+L = 4.33; %in
+m3B = 0.3509; %lbm
+m3C = 0.1111; %lbm
+
+m3 = m3B + m3C;
+
+m4 = .781; %lbm
+BG3 = 1.043; %in
+JG3 = 1.5; %lbm*in^2
+mBAL = m3B; %lbm
+g = 386.088; %in/sec^2
+
+
+
+data = load('SliderCrank_Shaking2.dta');
+
+t = data(:,1);
+dt = t(2) - t(1); %sec
+
+theta0 = 0; %rad
+thetadot = 1000*(2*pi/60); %rad/sec
+theta = thetadot*t + theta0; %rad
+phi = asin((R/L)*sin(theta));
+s = R*cos(theta) + L*cos(phi);
+
+sdot = gradient(s)/dt;
+sdotdot = gradient(sdot)/dt;
+
+Fx2on1_sim = -data(:,2);
+Fx2on1_sim(1) = Fx2on1_sim(2);
+
+Fy2on1_sim = -data(:,3);
+Fy2on1_sim(1) = Fy2on1_sim(2);
+
+Fy4on1_sim = -data(:,7);
+Fy4on1_sim(1) = Fy4on1_sim(2);
+
+% Fx2on1 = (m3B - mBAL)*R*thetadot.^2.*cos(theta) - (m3C + m4)*sdotdot;
+% 
+% Fy2on1 = (m3B - mBAL)*R*thetadot.^2.*sin(theta) + (m3C + m4)*sdotdot.*tan(phi);
+% Fy4on1 = -(m3C + m4)*sdotdot.*tan(phi);
+
+%matrix equation
+Fx = R*thetadot^2*((m3B - mBAL)*cos(theta) + (m3C + m4)*(cos(theta) + (R/L)*cos(2*theta)))/g;
+
+Fy = R*thetadot^2*((m3B - mBAL)*sin(theta))/g;
+
+step = 20;
+
+figure(3)
+% plot(Fx2on1,Fy2on1+Fy4on1,'b',Fx2on1_sim,Fy2on1_sim+Fy4on1_sim,'ro')
+plot(Fx,Fy,'b',Fx2on1_sim(1:step:end),Fy2on1_sim(1:step:end)+Fy4on1_sim(1:step:end),'ro')
+% plot(Fx,Fy,'b')
+xlabel('X Shaking Force (lbf)')
+ylabel('Y Shaking Force (lbf)')
+title('Y Shaking Force vs X Shaking Force (mBAL = m3B)')
+legend('Analytical','Simulation')
+ylim([-10 10])
+
+%% Problem 5
+clc,clear, close all
+
+R = .985; %in
+L = 4.33; %in
+m3B = 0.3509; %lbm
+m3C = 0.1111; %lbm
+
+m3 = m3B + m3C;
+
+m4 = .781; %lbm
+BG3 = 1.043; %in
+JG3 = 1.5; %lbm*in^2
+mBAL = m3C + m4; %lbm
+g = 386.088; %in/sec^2
+
+
+
+data = load('SliderCrank_Shaking3.dta');
+
+t = data(:,1);
+dt = t(2) - t(1); %sec
+
+theta0 = 0; %rad
+thetadot = 1000*(2*pi/60); %rad/sec
+theta = thetadot*t + theta0; %rad
+phi = asin((R/L)*sin(theta));
+s = R*cos(theta) + L*cos(phi);
+
+sdot = gradient(s)/dt;
+sdotdot = gradient(sdot)/dt;
+
+Fx2on1_sim = -data(:,2);
+Fx2on1_sim(1) = Fx2on1_sim(2);
+
+Fy2on1_sim = -data(:,3);
+Fy2on1_sim(1) = Fy2on1_sim(2);
+
+Fy4on1_sim = -data(:,7);
+Fy4on1_sim(1) = Fy4on1_sim(2);
+
+% Fx2on1 = (m3B - mBAL)*R*thetadot.^2.*cos(theta) - (m3C + m4)*sdotdot;
+% 
+% Fy2on1 = (m3B - mBAL)*R*thetadot.^2.*sin(theta) + (m3C + m4)*sdotdot.*tan(phi);
+% Fy4on1 = -(m3C + m4)*sdotdot.*tan(phi);
+
+%matrix equation
+Fx = R*thetadot^2*((m3B - mBAL)*cos(theta) + (m3C + m4)*(cos(theta) + (R/L)*cos(2*theta)))/g;
+
+Fy = R*thetadot^2*((m3B - mBAL)*sin(theta))/g;
+
+step = 20;
+
+figure(3)
+% plot(Fx2on1,Fy2on1+Fy4on1,'b',Fx2on1_sim,Fy2on1_sim+Fy4on1_sim,'ro')
+plot(Fx,Fy,'b',Fx2on1_sim(1:step:end),Fy2on1_sim(1:step:end)+Fy4on1_sim(1:step:end),'ro')
+% plot(Fx,Fy,'b')
+xlabel('X Shaking Force (lbf)')
+ylabel('Y Shaking Force (lbf)')
+title('Y Shaking Force vs X Shaking Force (mBAL = m3C + m4)')
+legend('Analytical','Simulation')
+
+Fs_analytical = max(Fx)
+Fs_sim = max(Fx2on1_sim)
+
+##### SOURCE END #####
+--></body></html>

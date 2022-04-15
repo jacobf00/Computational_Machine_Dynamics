@@ -1,0 +1,441 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW12</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-08"><meta name="DC.source" content="HW12.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clc,clear,close <span class="string">all</span>
+
+data = load(<span class="string">'hw12_dry.dta'</span>);
+data_neo = load(<span class="string">'hw12_neolite.dta'</span>);
+data_low = load(<span class="string">'hw12_lowspring.dta'</span>);
+data_high = load(<span class="string">'hw12_highspring.dta'</span>);
+
+t = data(:,1);
+t2 = data_neo(:,1);
+
+pos_dry = data(:,2);
+vel_dry = data(:,3);
+acc_dry = data(:,4);
+
+Fforce_dry = data(:,8);
+
+pos_neo = data_neo(:,2);
+vel_neo = data_neo(:,3);
+acc_neo = data_neo(:,4);
+
+Fforce_neo = data_neo(:,8);
+
+<span class="comment">%run with spring lowered</span>
+t_low = data_low(:,1);
+
+pos_low = data_low(:,2);
+vel_low = data_low(:,3);
+acc_low = data_low(:,4);
+
+Fforce_low = data_low(:,8);
+
+<span class="comment">%run with spring raised</span>
+t_high = data_high(:,1);
+
+pos_high = data_high(:,2);
+vel_high = data_high(:,3);
+acc_high = data_high(:,4);
+
+Fforce_high = data_high(:,8);
+
+<span class="comment">%filter out acceleration blips in beginning</span>
+t_index = find(t==1);
+acc_dry(1:t_index) = 0;
+
+<span class="comment">%doesn't work because of blips on negative accelerations</span>
+<span class="comment">%{
+</span><span class="comment">%filter out acceleration blips
+</span><span class="comment">t_index = find(t==1);
+</span><span class="comment">acc_dry(1:t_index) = 0;
+</span><span class="comment">
+</span><span class="comment">%find max acceleration
+</span><span class="comment">a_max_dry = max(abs(acc_dry));
+</span><span class="comment">%
+</span><span class="comment">%}
+</span>
+
+
+
+
+
+<span class="comment">%plot data</span>
+
+figure(1)
+subplot(4,1,1)
+plot(t,pos_dry,<span class="string">'r'</span>)
+ylabel(<span class="string">'Position [cm]'</span>)
+title(<span class="string">'Stick-slip for mus=0.4, mud=0.3'</span>)
+
+subplot(4,1,2)
+plot(t,vel_dry,<span class="string">'g'</span>)
+ylabel(<span class="string">'Velocity [cm/s]'</span>)
+
+subplot(4,1,3)
+plot(t,acc_dry,<span class="string">'b'</span>)
+ylabel(<span class="string">'Acceleration [cm/s^2]'</span>)
+
+subplot(4,1,4)
+plot(t,Fforce_dry)
+ylabel(<span class="string">'Friction [N]'</span>)
+xlabel(<span class="string">'Time [s]'</span>)
+
+
+figure(2)
+subplot(4,1,1)
+plot(t2,pos_neo,<span class="string">'r'</span>)
+ylabel(<span class="string">'Position [cm]'</span>)
+title(<span class="string">'Stick-slip for mus=0.9, mud=0.6'</span>)
+
+subplot(4,1,2)
+plot(t2,vel_neo,<span class="string">'g'</span>)
+ylabel(<span class="string">'Velocity [cm/s]'</span>)
+
+subplot(4,1,3)
+plot(t2,acc_neo,<span class="string">'b'</span>)
+ylabel(<span class="string">'Acceleration [cm/s^2]'</span>)
+
+subplot(4,1,4)
+plot(t2,Fforce_neo)
+ylabel(<span class="string">'Friction [N]'</span>)
+xlabel(<span class="string">'Time [s]'</span>)
+
+step = 50;
+
+figure(3)
+subplot(4,1,1)
+hold <span class="string">on</span>
+plot(t(1:find(t == 6)),pos_dry(1:find(t == 6)),<span class="string">'r'</span>)
+plot(t_low(1:step:find(t_low == 6)),pos_low(1:step:find(t_low == 6)),<span class="string">'blao'</span>)
+plot(t_high(1:step:find(t_high == 5.9)),pos_high(1:step:find(t_high == 5.9)),<span class="string">'yo'</span>)
+ylabel(<span class="string">'Position [cm]'</span>)
+title(<span class="string">'Stick-slip for mus=0.4, mud=0.3 (higher and lower springs)'</span>)
+legend(<span class="string">'Spring middle'</span>, <span class="string">'Spring low'</span>, <span class="string">'Spring high'</span>)
+hold <span class="string">off</span>
+
+subplot(4,1,2)
+hold <span class="string">on</span>
+plot(t(1:step:find(t == 6)),vel_dry(1:step:find(t == 6)),<span class="string">'g'</span>)
+plot(t_low(1:step:find(t_low == 6)),vel_low(1:step:find(t_low == 6)))
+plot(t_high(1:step:find(t_high == 5.9)),vel_high(1:step:find(t_high == 5.9)))
+ylabel(<span class="string">'Velocity [cm/s]'</span>)
+legend(<span class="string">'Spring middle'</span>, <span class="string">'Spring low'</span>, <span class="string">'Spring high'</span>)
+hold <span class="string">off</span>
+
+subplot(4,1,3)
+hold <span class="string">on</span>
+plot(t(1:step:find(t == 6)),acc_dry(1:step:find(t == 6)),<span class="string">'b'</span>)
+plot(t_low(1:step:find(t_low == 6)),acc_low(1:step:find(t_low == 6)))
+plot(t_high(1:step:find(t_high == 5.9)),acc_high(1:step:find(t_high == 5.9)))
+ylabel(<span class="string">'Acceleration [cm/s^2]'</span>)
+legend(<span class="string">'Spring middle'</span>, <span class="string">'Spring low'</span>, <span class="string">'Spring high'</span>)
+hold <span class="string">off</span>
+
+subplot(4,1,4)
+hold <span class="string">on</span>
+plot(t(1:find(t == 6)),Fforce_dry(1:find(t == 6)))
+plot(t_low(1:step:find(t_low == 6)),Fforce_low(1:step:find(t_low == 6)))
+plot(t_high(1:step:find(t_high == 5.9)),Fforce_high(1:step:find(t_high == 5.9)))
+ylabel(<span class="string">'Friction [N]'</span>)
+xlabel(<span class="string">'Time [s]'</span>)
+legend(<span class="string">'Spring middle'</span>, <span class="string">'Spring low'</span>, <span class="string">'Spring high'</span>)
+hold <span class="string">off</span>
+
+hold <span class="string">off</span>
+<span class="comment">%{
+</span><span class="comment">figure(3)
+</span><span class="comment">subplot(4,1,1)
+</span><span class="comment">plot(t_low,pos_low,'r')
+</span><span class="comment">ylabel('Position [cm]')
+</span><span class="comment">title('Stick-slip for mus=0.4, mud=0.3 (Spring attached lower)')
+</span><span class="comment">
+</span><span class="comment">subplot(4,1,2)
+</span><span class="comment">plot(t_low,vel_low,'g')
+</span><span class="comment">ylabel('Velocity [cm/s]')
+</span><span class="comment">
+</span><span class="comment">subplot(4,1,3)
+</span><span class="comment">plot(t_low,acc_low,'b')
+</span><span class="comment">ylabel('Acceleration [cm/s^2]')
+</span><span class="comment">
+</span><span class="comment">subplot(4,1,4)
+</span><span class="comment">plot(t_low,Fforce_low)
+</span><span class="comment">ylabel('Friction [N]')
+</span><span class="comment">xlabel('Time [s]')
+</span><span class="comment">
+</span><span class="comment">
+</span><span class="comment">figure(4)
+</span><span class="comment">subplot(4,1,1)
+</span><span class="comment">plot(t_high,pos_high,'r')
+</span><span class="comment">ylabel('Position [cm]')
+</span><span class="comment">title('Stick-slip for mus=0.4, mud=0.3 (Spring attached higher)')
+</span><span class="comment">
+</span><span class="comment">subplot(4,1,2)
+</span><span class="comment">plot(t_high,vel_high,'g')
+</span><span class="comment">ylabel('Velocity [cm/s]')
+</span><span class="comment">
+</span><span class="comment">subplot(4,1,3)
+</span><span class="comment">plot(t_high,acc_high,'b')
+</span><span class="comment">ylabel('Acceleration [cm/s^2]')
+</span><span class="comment">
+</span><span class="comment">subplot(4,1,4)
+</span><span class="comment">plot(t_high,Fforce_high)
+</span><span class="comment">ylabel('Friction [N]')
+</span><span class="comment">xlabel('Time [s]')
+</span><span class="comment">
+</span><span class="comment">%}</span>
+</pre><img vspace="5" hspace="5" src="HW12_01.png" alt=""> <img vspace="5" hspace="5" src="HW12_02.png" alt=""> <img vspace="5" hspace="5" src="HW12_03.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clc,clear,close all
+
+data = load('hw12_dry.dta');
+data_neo = load('hw12_neolite.dta');
+data_low = load('hw12_lowspring.dta');
+data_high = load('hw12_highspring.dta');
+
+t = data(:,1);
+t2 = data_neo(:,1);
+
+pos_dry = data(:,2);
+vel_dry = data(:,3);
+acc_dry = data(:,4);
+
+Fforce_dry = data(:,8);
+
+pos_neo = data_neo(:,2);
+vel_neo = data_neo(:,3);
+acc_neo = data_neo(:,4);
+
+Fforce_neo = data_neo(:,8);
+
+%run with spring lowered
+t_low = data_low(:,1);
+
+pos_low = data_low(:,2);
+vel_low = data_low(:,3);
+acc_low = data_low(:,4);
+
+Fforce_low = data_low(:,8);
+
+%run with spring raised
+t_high = data_high(:,1);
+
+pos_high = data_high(:,2);
+vel_high = data_high(:,3);
+acc_high = data_high(:,4);
+
+Fforce_high = data_high(:,8);
+
+%filter out acceleration blips in beginning
+t_index = find(t==1);
+acc_dry(1:t_index) = 0;
+
+%doesn't work because of blips on negative accelerations
+%{
+%filter out acceleration blips
+t_index = find(t==1);
+acc_dry(1:t_index) = 0;
+
+%find max acceleration
+a_max_dry = max(abs(acc_dry));
+% 
+%}
+
+
+
+
+
+
+%plot data
+
+figure(1)
+subplot(4,1,1)
+plot(t,pos_dry,'r')
+ylabel('Position [cm]')
+title('Stick-slip for mus=0.4, mud=0.3')
+
+subplot(4,1,2)
+plot(t,vel_dry,'g')
+ylabel('Velocity [cm/s]')
+
+subplot(4,1,3)
+plot(t,acc_dry,'b')
+ylabel('Acceleration [cm/s^2]')
+
+subplot(4,1,4)
+plot(t,Fforce_dry)
+ylabel('Friction [N]')
+xlabel('Time [s]')
+
+
+figure(2)
+subplot(4,1,1)
+plot(t2,pos_neo,'r')
+ylabel('Position [cm]')
+title('Stick-slip for mus=0.9, mud=0.6')
+
+subplot(4,1,2)
+plot(t2,vel_neo,'g')
+ylabel('Velocity [cm/s]')
+
+subplot(4,1,3)
+plot(t2,acc_neo,'b')
+ylabel('Acceleration [cm/s^2]')
+
+subplot(4,1,4)
+plot(t2,Fforce_neo)
+ylabel('Friction [N]')
+xlabel('Time [s]')
+
+step = 50;
+
+figure(3)
+subplot(4,1,1)
+hold on
+plot(t(1:find(t == 6)),pos_dry(1:find(t == 6)),'r')
+plot(t_low(1:step:find(t_low == 6)),pos_low(1:step:find(t_low == 6)),'blao')
+plot(t_high(1:step:find(t_high == 5.9)),pos_high(1:step:find(t_high == 5.9)),'yo')
+ylabel('Position [cm]')
+title('Stick-slip for mus=0.4, mud=0.3 (higher and lower springs)')
+legend('Spring middle', 'Spring low', 'Spring high')
+hold off
+
+subplot(4,1,2)
+hold on
+plot(t(1:step:find(t == 6)),vel_dry(1:step:find(t == 6)),'g')
+plot(t_low(1:step:find(t_low == 6)),vel_low(1:step:find(t_low == 6)))
+plot(t_high(1:step:find(t_high == 5.9)),vel_high(1:step:find(t_high == 5.9)))
+ylabel('Velocity [cm/s]')
+legend('Spring middle', 'Spring low', 'Spring high')
+hold off
+
+subplot(4,1,3)
+hold on
+plot(t(1:step:find(t == 6)),acc_dry(1:step:find(t == 6)),'b')
+plot(t_low(1:step:find(t_low == 6)),acc_low(1:step:find(t_low == 6)))
+plot(t_high(1:step:find(t_high == 5.9)),acc_high(1:step:find(t_high == 5.9)))
+ylabel('Acceleration [cm/s^2]')
+legend('Spring middle', 'Spring low', 'Spring high')
+hold off
+
+subplot(4,1,4)
+hold on
+plot(t(1:find(t == 6)),Fforce_dry(1:find(t == 6)))
+plot(t_low(1:step:find(t_low == 6)),Fforce_low(1:step:find(t_low == 6)))
+plot(t_high(1:step:find(t_high == 5.9)),Fforce_high(1:step:find(t_high == 5.9)))
+ylabel('Friction [N]')
+xlabel('Time [s]')
+legend('Spring middle', 'Spring low', 'Spring high')
+hold off
+
+hold off
+%{
+figure(3)
+subplot(4,1,1)
+plot(t_low,pos_low,'r')
+ylabel('Position [cm]')
+title('Stick-slip for mus=0.4, mud=0.3 (Spring attached lower)')
+
+subplot(4,1,2)
+plot(t_low,vel_low,'g')
+ylabel('Velocity [cm/s]')
+
+subplot(4,1,3)
+plot(t_low,acc_low,'b')
+ylabel('Acceleration [cm/s^2]')
+
+subplot(4,1,4)
+plot(t_low,Fforce_low)
+ylabel('Friction [N]')
+xlabel('Time [s]')
+
+
+figure(4)
+subplot(4,1,1)
+plot(t_high,pos_high,'r')
+ylabel('Position [cm]')
+title('Stick-slip for mus=0.4, mud=0.3 (Spring attached higher)')
+
+subplot(4,1,2)
+plot(t_high,vel_high,'g')
+ylabel('Velocity [cm/s]')
+
+subplot(4,1,3)
+plot(t_high,acc_high,'b')
+ylabel('Acceleration [cm/s^2]')
+
+subplot(4,1,4)
+plot(t_high,Fforce_high)
+ylabel('Friction [N]')
+xlabel('Time [s]')
+
+%}
+##### SOURCE END #####
+--></body></html>

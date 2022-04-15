@@ -1,0 +1,403 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>HW13</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-14"><meta name="DC.source" content="HW13.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Problem 1</a></li><li><a href="#2">Problem 2</a></li><li><a href="#3">Problem 3</a></li><li><a href="#4">Problem 4</a></li></ul></div><h2 id="1">Problem 1</h2><pre class="codeinput">clc,clear,close <span class="string">all</span>
+
+data = load(<span class="string">'Pendulum.dta'</span>);
+data_large = load(<span class="string">'Pendulum_large.dta'</span>);
+
+t = data(:,1);
+theta = -(data(:,2) - 270);
+thetadot = -data(:,3) * (pi/180);
+thetadotdot = -data(:,4) * (pi/180);
+
+t_large = data_large(:,1);
+thetadotdot_large = -data_large(:,4) * (pi/180);
+
+<span class="comment">%period of oscillation calculation from notes</span>
+m = .46; <span class="comment">%lbm</span>
+a = 3.7; <span class="comment">%in</span>
+JG = 1.5; <span class="comment">%lbm*in^2</span>
+g = 386.08858267717; <span class="comment">%in/s^2</span>
+
+tau = sqrt((4*pi^2)*(JG + m*a^2)/(m*g*a));
+tau_graph = 1.02933 - .344; <span class="comment">%sec</span>
+
+fprintf(<span class="string">'The period of oscillation calculated from Notes 07_03 is %.3f seconds.\n'</span>,tau)
+fprintf(<span class="string">'The period of oscillation calculated from the graph %.3f seconds.\n'</span>,tau_graph)
+
+
+<span class="comment">%Plot data</span>
+
+figure(1)
+subplot(3,1,1)
+plot(t,theta,<span class="string">'r'</span>)
+ylabel(<span class="string">'angular displacement [deg]'</span>)
+title(<span class="string">'angular displacement, velocity, acceleration vs time'</span>)
+
+subplot(3,1,2)
+plot(t,thetadot,<span class="string">'g'</span>)
+ylabel(<span class="string">'angular velocity [rad/sec]'</span>)
+
+subplot(3,1,3)
+plot(t,thetadotdot,<span class="string">'b'</span>)
+ylabel(<span class="string">'angular acceleration [rad/sec^2]'</span>)
+xlabel(<span class="string">'time [sec]'</span>)
+</pre><pre class="codeoutput">The period of oscillation calculated from Notes 07_03 is 0.684 seconds.
+The period of oscillation calculated from the graph 0.685 seconds.
+</pre><img vspace="5" hspace="5" src="HW13_01.png" alt=""> <h2 id="2">Problem 2</h2><pre class="codeinput">figure(2)
+plot(theta,thetadot)
+xlabel(<span class="string">'angular displacement [deg]'</span>)
+ylabel(<span class="string">'angular velocity [rad/sec]'</span>)
+title(<span class="string">'angular velocity vs displacement'</span>)
+</pre><img vspace="5" hspace="5" src="HW13_02.png" alt=""> <h2 id="3">Problem 3</h2><p>do fft</p><pre class="codeinput"><span class="comment">% read time domain data here</span>
+<span class="comment">% must also define time step h</span>
+<span class="comment">% alternately create synthetic signal for testing</span>
+<span class="comment">% synthetic - 30 Hz sine, +/- 5 mm, 0.001 sec time step</span>
+h = 0.0013; <span class="comment">% time step [sec]</span>
+<span class="comment">% f_synthetic = 30; % synthetic frequency [Hz]</span>
+<span class="comment">% x_max = 5; % size synthetic signal [mm]</span>
+<span class="comment">% t2 = [ 0:(1999) ]' * h; % synthetic time [sec]</span>
+<span class="comment">% x = x_max * sin( 2 * pi * f_synthetic * t2 ); % synthetic signal [mm]</span>
+<span class="comment">% bottom - creating synthetic signal</span>
+<span class="comment">% synthetic square wave</span>
+<span class="comment">%x = sign( x );</span>
+<span class="comment">% find number of samples and sampling frequency</span>
+n = length( thetadotdot ); <span class="comment">% number of samples</span>
+fs = 1 / h; <span class="comment">% sampling frequency [Hz]</span>
+<span class="comment">% FFT</span>
+<span class="comment">% MATLAB FFT must be scaled by 2/n - DC component must be scaled scaled by 1/n</span>
+a = fft(thetadotdot) * 2 / n; <span class="comment">% complex number - units [mm]</span>
+a(1) = a(1) / 2; <span class="comment">% offset at frequency of 0 Hz [mm]</span>
+a(end) = a(end) / 2;
+amp = abs( a ); <span class="comment">% amplitude at each frequency [mm]</span>
+phase = angle( a ) * 180 / pi; <span class="comment">% phase angle [deg]</span>
+df = fs / n; <span class="comment">% frequency resolution between spectral bands [Hz]</span>
+freq = [ 0:(n-1) ]' * df; <span class="comment">% all frequencies [Hz]</span>
+<span class="comment">% find peaks and list</span>
+[ peaks, i_locations ] = findpeaks( amp, <span class="string">'MinPeakHeight'</span>, 0.1 ); <span class="comment">% ignore tiny values</span>
+disp( <span class="string">' '</span> )
+disp( <span class="string">' freq [Hz] peak [rad/sec^2]'</span> )
+disp( [ freq(i_locations) peaks ] ) <span class="comment">% units [Hz] [mm]</span>
+<span class="comment">% plot time domain, amplitude, phase</span>
+
+<span class="comment">%Determine natural frequency from fft using peak i location</span>
+wn = freq(i_locations(1));
+fprintf(<span class="string">'The peak amplitude of the +- 10 deg signal occurs around %.3f Hz which would be the signal''s natural frequency\n'</span>,wn)
+tau_fft = 1/wn;
+fprintf(<span class="string">'The period of oscillation of the +- 10 deg signal determined from the fft would be %.3f sec\n'</span>,tau_fft)
+
+figure( 3 )
+subplot( 3,1,1 )
+ plot( t, thetadotdot )
+ xlabel( <span class="string">'Time (sec)'</span> )
+ ylabel( <span class="string">'Signal [rad/s^2]'</span> )
+ title(<span class="string">'fft of small angle pendulum (+- 10 deg)'</span>)
+subplot( 3,1,2 )
+ plot( freq, amp )
+ xlabel( <span class="string">'Frequency [Hz]'</span> )
+ ylabel( <span class="string">'Amplitude [rad/s^2]'</span> )
+ xlim([0 30])
+subplot( 3,1,3 )
+ plot( freq, phase )
+ xlabel( <span class="string">'Frequency [Hz]'</span> )
+ ylabel( <span class="string">'Phase [deg]'</span> )
+ xlim([0 30])
+</pre><pre class="codeoutput"> 
+ freq [Hz] peak [rad/sec^2]
+    1.6251   10.1374
+  767.6056   10.1374
+
+The peak amplitude of the +- 10 deg signal occurs around 1.625 Hz which would be the signal's natural frequency
+The period of oscillation of the +- 10 deg signal determined from the fft would be 0.615 sec
+</pre><img vspace="5" hspace="5" src="HW13_03.png" alt=""> <h2 id="4">Problem 4</h2><pre class="codeinput">h_large = 0.001; <span class="comment">% time step [sec]</span>
+<span class="comment">% f_synthetic = 30; % synthetic frequency [Hz]</span>
+<span class="comment">% x_max = 5; % size synthetic signal [mm]</span>
+<span class="comment">% t2 = [ 0:(1999) ]' * h; % synthetic time [sec]</span>
+<span class="comment">% x = x_max * sin( 2 * pi * f_synthetic * t2 ); % synthetic signal [mm]</span>
+<span class="comment">% bottom - creating synthetic signal</span>
+<span class="comment">% synthetic square wave</span>
+<span class="comment">%x = sign( x );</span>
+<span class="comment">% find number of samples and sampling frequency</span>
+n_large = length( thetadotdot_large ); <span class="comment">% number of samples</span>
+fs_large = 1 / h_large; <span class="comment">% sampling frequency [Hz]</span>
+<span class="comment">% FFT</span>
+<span class="comment">% MATLAB FFT must be scaled by 2/n - DC component must be scaled scaled by 1/n</span>
+a_large = fft(thetadotdot_large) * 2 / n_large; <span class="comment">% complex number - units [mm]</span>
+a_large(1) = a_large(1) / 2; <span class="comment">% offset at frequency of 0 Hz [mm]</span>
+a_large(end) = a_large(end) / 2;
+amp_large = abs( a_large ); <span class="comment">% amplitude at each frequency [mm]</span>
+phase_large = angle( a_large ) * 180 / pi; <span class="comment">% phase angle [deg]</span>
+df_large = fs_large / n_large; <span class="comment">% frequency resolution between spectral bands [Hz]</span>
+freq_large = [ 0:(n_large-1) ]' * df_large; <span class="comment">% all frequencies [Hz]</span>
+<span class="comment">% find peaks and list</span>
+[ peaks_large, i_locations_large ] = findpeaks( amp_large, <span class="string">'MinPeakHeight'</span>, 0.1 ); <span class="comment">% ignore tiny values</span>
+disp( <span class="string">' '</span> )
+disp( <span class="string">' freq [Hz] peak [rad/sec^2]'</span> )
+disp( [ freq_large(i_locations_large) peaks_large ] ) <span class="comment">% units [Hz] [mm]</span>
+<span class="comment">% plot time domain, amplitude, phase</span>
+
+<span class="comment">%Determine natural frequency from fft using peak i location</span>
+wn_large = freq_large(i_locations_large(1));
+fprintf(<span class="string">'The peak amplitude of the +- 80 deg signal occurs around %.3f Hz which would be the signal''s natural frequency\n'</span>,wn_large)
+tau_fft_large = 1/wn_large;
+fprintf(<span class="string">'The period of oscillation of the +- 80 deg signal determined from the fft would be %.3f sec\n'</span>,tau_fft_large)
+
+figure( 4 )
+subplot( 3,1,1 )
+ plot( t_large, thetadotdot_large )
+ xlabel( <span class="string">'Time (sec)'</span> )
+ ylabel( <span class="string">'Signal [rad/s^2]'</span> )
+ title(<span class="string">'fft of large angle pendulum (+- 80 deg)'</span>)
+subplot( 3,1,2 )
+ plot( freq_large, amp_large )
+ xlabel( <span class="string">'Frequency [Hz]'</span> )
+ ylabel( <span class="string">'Amplitude [rad/s^2]'</span> )
+ xlim([0 30])
+subplot( 3,1,3 )
+ plot( freq_large, phase_large )
+ xlabel( <span class="string">'Frequency [Hz]'</span> )
+ ylabel( <span class="string">'Phase [deg]'</span> )
+ xlim([0 30])
+</pre><pre class="codeoutput"> 
+ freq [Hz] peak [rad/sec^2]
+    1.2557   90.5574
+    3.7670    8.4060
+    6.5294    0.3898
+  993.4706    0.3898
+  996.2330    8.4060
+  998.7443   90.5574
+
+The peak amplitude of the +- 80 deg signal occurs around 1.256 Hz which would be the signal's natural frequency
+The period of oscillation of the +- 80 deg signal determined from the fft would be 0.796 sec
+</pre><img vspace="5" hspace="5" src="HW13_04.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Problem 1
+clc,clear,close all
+
+data = load('Pendulum.dta');
+data_large = load('Pendulum_large.dta');
+
+t = data(:,1);
+theta = -(data(:,2) - 270);
+thetadot = -data(:,3) * (pi/180);
+thetadotdot = -data(:,4) * (pi/180);
+
+t_large = data_large(:,1);
+thetadotdot_large = -data_large(:,4) * (pi/180);
+
+%period of oscillation calculation from notes
+m = .46; %lbm
+a = 3.7; %in
+JG = 1.5; %lbm*in^2
+g = 386.08858267717; %in/s^2
+
+tau = sqrt((4*pi^2)*(JG + m*a^2)/(m*g*a));
+tau_graph = 1.02933 - .344; %sec
+
+fprintf('The period of oscillation calculated from Notes 07_03 is %.3f seconds.\n',tau)
+fprintf('The period of oscillation calculated from the graph %.3f seconds.\n',tau_graph)
+
+
+%Plot data
+
+figure(1)
+subplot(3,1,1)
+plot(t,theta,'r')
+ylabel('angular displacement [deg]')
+title('angular displacement, velocity, acceleration vs time')
+
+subplot(3,1,2)
+plot(t,thetadot,'g')
+ylabel('angular velocity [rad/sec]')
+
+subplot(3,1,3)
+plot(t,thetadotdot,'b')
+ylabel('angular acceleration [rad/sec^2]')
+xlabel('time [sec]')
+
+%% Problem 2
+
+figure(2)
+plot(theta,thetadot)
+xlabel('angular displacement [deg]')
+ylabel('angular velocity [rad/sec]')
+title('angular velocity vs displacement')
+
+%% Problem 3
+% do fft
+
+% read time domain data here
+% must also define time step h
+% alternately create synthetic signal for testing
+% synthetic - 30 Hz sine, +/- 5 mm, 0.001 sec time step
+h = 0.0013; % time step [sec]
+% f_synthetic = 30; % synthetic frequency [Hz]
+% x_max = 5; % size synthetic signal [mm]
+% t2 = [ 0:(1999) ]' * h; % synthetic time [sec]
+% x = x_max * sin( 2 * pi * f_synthetic * t2 ); % synthetic signal [mm]
+% bottom - creating synthetic signal
+% synthetic square wave
+%x = sign( x );
+% find number of samples and sampling frequency
+n = length( thetadotdot ); % number of samples
+fs = 1 / h; % sampling frequency [Hz]
+% FFT
+% MATLAB FFT must be scaled by 2/n - DC component must be scaled scaled by 1/n
+a = fft(thetadotdot) * 2 / n; % complex number - units [mm]
+a(1) = a(1) / 2; % offset at frequency of 0 Hz [mm]
+a(end) = a(end) / 2;
+amp = abs( a ); % amplitude at each frequency [mm]
+phase = angle( a ) * 180 / pi; % phase angle [deg]
+df = fs / n; % frequency resolution between spectral bands [Hz]
+freq = [ 0:(n-1) ]' * df; % all frequencies [Hz]
+% find peaks and list
+[ peaks, i_locations ] = findpeaks( amp, 'MinPeakHeight', 0.1 ); % ignore tiny values
+disp( ' ' )
+disp( ' freq [Hz] peak [rad/sec^2]' )
+disp( [ freq(i_locations) peaks ] ) % units [Hz] [mm]
+% plot time domain, amplitude, phase
+
+%Determine natural frequency from fft using peak i location
+wn = freq(i_locations(1));
+fprintf('The peak amplitude of the +- 10 deg signal occurs around %.3f Hz which would be the signal''s natural frequency\n',wn)
+tau_fft = 1/wn;
+fprintf('The period of oscillation of the +- 10 deg signal determined from the fft would be %.3f sec\n',tau_fft)
+
+figure( 3 )
+subplot( 3,1,1 ) 
+ plot( t, thetadotdot )
+ xlabel( 'Time (sec)' )
+ ylabel( 'Signal [rad/s^2]' )
+ title('fft of small angle pendulum (+- 10 deg)')
+subplot( 3,1,2 )
+ plot( freq, amp )
+ xlabel( 'Frequency [Hz]' )
+ ylabel( 'Amplitude [rad/s^2]' )
+ xlim([0 30])
+subplot( 3,1,3 )
+ plot( freq, phase )
+ xlabel( 'Frequency [Hz]' )
+ ylabel( 'Phase [deg]' )
+ xlim([0 30])
+ 
+ %% Problem 4
+ 
+h_large = 0.001; % time step [sec]
+% f_synthetic = 30; % synthetic frequency [Hz]
+% x_max = 5; % size synthetic signal [mm]
+% t2 = [ 0:(1999) ]' * h; % synthetic time [sec]
+% x = x_max * sin( 2 * pi * f_synthetic * t2 ); % synthetic signal [mm]
+% bottom - creating synthetic signal
+% synthetic square wave
+%x = sign( x );
+% find number of samples and sampling frequency
+n_large = length( thetadotdot_large ); % number of samples
+fs_large = 1 / h_large; % sampling frequency [Hz]
+% FFT
+% MATLAB FFT must be scaled by 2/n - DC component must be scaled scaled by 1/n
+a_large = fft(thetadotdot_large) * 2 / n_large; % complex number - units [mm]
+a_large(1) = a_large(1) / 2; % offset at frequency of 0 Hz [mm]
+a_large(end) = a_large(end) / 2;
+amp_large = abs( a_large ); % amplitude at each frequency [mm]
+phase_large = angle( a_large ) * 180 / pi; % phase angle [deg]
+df_large = fs_large / n_large; % frequency resolution between spectral bands [Hz]
+freq_large = [ 0:(n_large-1) ]' * df_large; % all frequencies [Hz]
+% find peaks and list
+[ peaks_large, i_locations_large ] = findpeaks( amp_large, 'MinPeakHeight', 0.1 ); % ignore tiny values
+disp( ' ' )
+disp( ' freq [Hz] peak [rad/sec^2]' )
+disp( [ freq_large(i_locations_large) peaks_large ] ) % units [Hz] [mm]
+% plot time domain, amplitude, phase
+
+%Determine natural frequency from fft using peak i location
+wn_large = freq_large(i_locations_large(1));
+fprintf('The peak amplitude of the +- 80 deg signal occurs around %.3f Hz which would be the signal''s natural frequency\n',wn_large)
+tau_fft_large = 1/wn_large;
+fprintf('The period of oscillation of the +- 80 deg signal determined from the fft would be %.3f sec\n',tau_fft_large)
+
+figure( 4 )
+subplot( 3,1,1 ) 
+ plot( t_large, thetadotdot_large )
+ xlabel( 'Time (sec)' )
+ ylabel( 'Signal [rad/s^2]' )
+ title('fft of large angle pendulum (+- 80 deg)')
+subplot( 3,1,2 )
+ plot( freq_large, amp_large )
+ xlabel( 'Frequency [Hz]' )
+ ylabel( 'Amplitude [rad/s^2]' )
+ xlim([0 30])
+subplot( 3,1,3 )
+ plot( freq_large, phase_large )
+ xlabel( 'Frequency [Hz]' )
+ ylabel( 'Phase [deg]' )
+ xlim([0 30])
+
+##### SOURCE END #####
+--></body></html>
