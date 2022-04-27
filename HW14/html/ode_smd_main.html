@@ -1,0 +1,505 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ode_smd_main</title><meta name="generator" content="MATLAB 9.10"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2022-04-19"><meta name="DC.source" content="ode_smd_main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Problems 1-2</a></li><li><a href="#2">Problem 3</a></li><li><a href="#3">Problem 5</a></li></ul></div><h2 id="1">Problems 1-2</h2><p>ode_smd_main.m - main program for example use of ODE solver spring-mass-damper HJSIII, 20.04.09</p><p>ODE coded in file ode_smd_yd.m - m*xdd = Fext + Fspr + Fdamp</p><p>{y} = { x } {yd} = { xd } { xd } { xdd }</p><pre class="codeinput">clear
+<span class="keyword">global</span> m k c
+<span class="comment">% physical constants</span>
+<span class="comment">% x [m]</span>
+<span class="comment">% xd [m/sec]</span>
+<span class="comment">% xdd [m/sec^2]</span>
+m = 1; <span class="comment">% mass [kg]</span>
+k = 157.9; <span class="comment">% spring [N/m] - causes wn = 2Hz</span>
+c = 2; <span class="comment">% viscous [N.sec/m] - causes 4 sec exp decay</span>
+<span class="comment">% calculate damping coeficient from coefficients</span>
+wn = sqrt(k/m);
+damp_coeff = (c/(2*wn*m));
+fprintf(<span class="string">'The damping coefficient calculated from the m,k,c coefficents is %.4f\n'</span>,damp_coeff)
+<span class="comment">% calculate damping coeficient from decrement</span>
+n = 2;
+x0 = .0597578;
+xn = .0217619;
+decrement = (1/n)*log(x0/xn);
+damp_dec = decrement/sqrt(4*pi^2 + decrement^2);
+fprintf(<span class="string">'The damping coefficient calculated from the log decrement is %.4f\n'</span>,damp_dec)
+
+<span class="comment">% initial conditions</span>
+y0 = [ 0.1 0 ]'; <span class="comment">% free release</span>
+<span class="comment">% time range</span>
+tspan = [ 0 4 ];
+<span class="comment">% measure CPU time</span>
+tic;
+[ t, y ] = ode23( <span class="string">'ode_smd_yd'</span>, tspan, y0 );
+t_exe = toc
+<span class="comment">% time step</span>
+h = 1000 * diff(t); <span class="comment">% units [msec]</span>
+h = [ h ; h(end) ]; <span class="comment">% repeat last value to make the same length as t</span>
+n_time_steps = length( t )
+ave_time_step = mean( h )
+<span class="comment">% time domain results</span>
+figure( 1 )
+ subplot( 2, 2, 1 )
+ plot( t, y(:,1) )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Position [m]'</span> )
+ axis( [ 0 4 -0.1 0.1 ] )
+ subplot( 2, 2, 2 )
+ plot( t, y(:,2) )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Velocity [m/sec]'</span> )
+ axis( [ 0 4 -1.5 1.5 ] )
+ subplot( 2, 2, 3 )
+ plot( y(:,1), y(:,2) )
+ xlabel( <span class="string">'Position [m]'</span> )
+ ylabel( <span class="string">'Velocity [m/sec]]'</span> )
+ subplot( 2, 2, 4 )
+ plot( t, h )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Time step [msec]'</span> )
+<span class="comment">% bottom - ode_smd_main</span>
+</pre><pre class="codeoutput">The damping coefficient calculated from the m,k,c coefficents is 0.0796
+The damping coefficient calculated from the log decrement is 0.0801
+
+t_exe =
+
+    0.0576
+
+
+n_time_steps =
+
+   235
+
+
+ave_time_step =
+
+   17.0592
+
+</pre><img vspace="5" hspace="5" src="ode_smd_main_01.png" alt=""> <h2 id="2">Problem 3</h2><pre class="codeinput">clc,clear <span class="string">all</span>
+
+<span class="keyword">global</span> m k c f
+<span class="comment">% physical constants</span>
+<span class="comment">% x [m]</span>
+<span class="comment">% xd [m/sec]</span>
+<span class="comment">% xdd [m/sec^2]</span>
+m = 1; <span class="comment">% mass [kg]</span>
+k = 157.9; <span class="comment">% spring [N/m] - causes wn = 2Hz</span>
+c = 0; <span class="comment">% viscous [N.sec/m] - causes 4 sec exp decay</span>
+f = .5; <span class="comment">%N</span>
+<span class="comment">% calculate damping coeficient from coefficients</span>
+<span class="comment">% wn = sqrt(k/m);</span>
+<span class="comment">% damp_coeff = (c/(2*wn*m));</span>
+<span class="comment">% fprintf('The damping coefficient calculated from the m,k,c coefficents is %.4f\n',damp_coeff)</span>
+<span class="comment">% % calculate damping coeficient from decrement</span>
+<span class="comment">% n = 2;</span>
+<span class="comment">% x0 = .0597578;</span>
+<span class="comment">% xn = .0217619;</span>
+<span class="comment">% decrement = (1/n)*log(x0/xn);</span>
+<span class="comment">% damp_dec = decrement/sqrt(4*pi^2 + decrement^2);</span>
+<span class="comment">% fprintf('The damping coefficient calculated from the log decrement is %.4f\n',damp_dec)</span>
+
+<span class="comment">% initial conditions</span>
+y0 = [ 0.1 0 ]'; <span class="comment">% free release</span>
+<span class="comment">% time range</span>
+tspan = [ 0 4 ];
+<span class="comment">% measure CPU time</span>
+tic;
+[ t, y ] = ode23( <span class="string">'ode_smd_yd2'</span>, tspan, y0 );
+t_exe = toc
+<span class="comment">% time step</span>
+h = 1000 * diff(t); <span class="comment">% units [msec]</span>
+h = [ h ; h(end) ]; <span class="comment">% repeat last value to make the same length as t</span>
+n_time_steps = length( t )
+ave_time_step = mean( h )
+<span class="comment">% time domain results</span>
+<span class="comment">% calculate Coulomb friction force from decay envelope</span>
+n = 3;
+x0 = .0868991;
+xn = .0482818;
+f_computed = (k*(x0 - xn))/(4*n);
+fprintf(<span class="string">'The Coulomb friction force computed from the decay envelope of the simulation data is %.3f [N]\n'</span>,f_computed)
+
+figure( 2 )
+ subplot( 2, 2, 1 )
+ plot( t, y(:,1) )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Position [m]'</span> )
+ axis( [ 0 4 -0.1 0.1 ] )
+ subplot( 2, 2, 2 )
+ plot( t, y(:,2) )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Velocity [m/sec]'</span> )
+ axis( [ 0 4 -1.5 1.5 ] )
+ subplot( 2, 2, 3 )
+ plot( y(:,1), y(:,2) )
+ xlabel( <span class="string">'Position [m]'</span> )
+ ylabel( <span class="string">'Velocity [m/sec]]'</span> )
+ subplot( 2, 2, 4 )
+ plot( t, h )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Time step [msec]'</span> )
+</pre><pre class="codeoutput">
+t_exe =
+
+    0.0925
+
+
+n_time_steps =
+
+   422
+
+
+ave_time_step =
+
+    9.4787
+
+The Coulomb friction force computed from the decay envelope of the simulation data is 0.508 [N]
+</pre><img vspace="5" hspace="5" src="ode_smd_main_02.png" alt=""> <h2 id="3">Problem 5</h2><pre class="codeinput">clc,clear <span class="string">all</span>
+
+<span class="keyword">global</span> m k mu_s mu_d g epsilon vdr xdr0
+<span class="comment">% physical constants</span>
+<span class="comment">% x [m]</span>
+<span class="comment">% xd [m/sec]</span>
+<span class="comment">% xdd [m/sec^2]</span>
+m = 12.5; <span class="comment">% mass [kg]</span>
+k = 742.5; <span class="comment">% spring [N/m] - causes wn = 2Hz</span>
+g = 9.81; <span class="comment">%m/s^2</span>
+mu_d = .6;
+mu_s = .9;
+epsilon = 1*10^-3; <span class="comment">%m/s^2</span>
+vdr = 3.4 * (10^-2); <span class="comment">%m/s</span>
+xdr0 = .04; <span class="comment">%m initial distance of driver</span>
+<span class="comment">% calculate damping coeficient from coefficients</span>
+<span class="comment">% wn = sqrt(k/m);</span>
+<span class="comment">% damp_coeff = (c/(2*wn*m));</span>
+<span class="comment">% fprintf('The damping coefficient calculated from the m,k,c coefficents is %.4f\n',damp_coeff)</span>
+<span class="comment">% % calculate damping coeficient from decrement</span>
+<span class="comment">% n = 2;</span>
+<span class="comment">% x0 = .0597578;</span>
+<span class="comment">% xn = .0217619;</span>
+<span class="comment">% decrement = (1/n)*log(x0/xn);</span>
+<span class="comment">% damp_dec = decrement/sqrt(4*pi^2 + decrement^2);</span>
+<span class="comment">% fprintf('The damping coefficient calculated from the log decrement is %.4f\n',damp_dec)</span>
+
+<span class="comment">% initial conditions</span>
+y0 = [ 0 0 ]'; <span class="comment">% free release</span>
+<span class="comment">% time range</span>
+tspan = [ 0 15 ];
+<span class="comment">% measure CPU time</span>
+tic;
+[ t, y ] = ode23( <span class="string">'ode_dragsled_yd'</span>, tspan, y0 );
+t_exe = toc
+<span class="comment">% time step</span>
+h = 1000 * diff(t); <span class="comment">% units [msec]</span>
+h = [ h ; h(end) ]; <span class="comment">% repeat last value to make the same length as t</span>
+n_time_steps = length( t )
+ave_time_step = mean( h )
+<span class="comment">% time domain results</span>
+<span class="comment">% calculate Coulomb friction force from decay envelope</span>
+<span class="comment">% n = 3;</span>
+<span class="comment">% x0 = .0868991;</span>
+<span class="comment">% xn = .0482818;</span>
+<span class="comment">% f_computed = (k*(x0 - xn))/(4*n);</span>
+<span class="comment">% fprintf('The Coulomb friction force computed from the decay envelope of the simulation data is %.3f [N]\n',f_computed)</span>
+
+figure( 3 )
+ subplot( 2, 2, 1 )
+ plot( t, y(:,1) )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Position [m]'</span> )
+<span class="comment">%  axis( [ 0 4 -0.1 0.1 ] )</span>
+ subplot( 2, 2, 2 )
+ plot( t, y(:,2) )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Velocity [m/sec]'</span> )
+<span class="comment">%  axis( [ 0 4 -1.5 1.5 ] )</span>
+ subplot( 2, 2, 3 )
+ plot( t, gradient(y(:,2)) )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Acceleration [m/sec^2]]'</span> )
+ subplot( 2, 2, 4 )
+ plot( t, h )
+ xlabel( <span class="string">'Time [sec]'</span> )
+ ylabel( <span class="string">'Time step [msec]'</span> )
+</pre><pre class="codeoutput">
+t_exe =
+
+    0.0778
+
+
+n_time_steps =
+
+   169
+
+
+ave_time_step =
+
+   88.9152
+
+</pre><img vspace="5" hspace="5" src="ode_smd_main_03.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2021a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Problems 1-2
+% ode_smd_main.m - main program for example use of ODE solver
+% spring-mass-damper
+% HJSIII, 20.04.09
+%
+% ODE coded in file ode_smd_yd.m - m*xdd = Fext + Fspr + Fdamp
+%
+% {y} = { x } {yd} = { xd }
+% { xd } { xdd }
+clear
+global m k c
+% physical constants
+% x [m]
+% xd [m/sec]
+% xdd [m/sec^2]
+m = 1; % mass [kg]
+k = 157.9; % spring [N/m] - causes wn = 2Hz
+c = 2; % viscous [N.sec/m] - causes 4 sec exp decay
+% calculate damping coeficient from coefficients
+wn = sqrt(k/m);
+damp_coeff = (c/(2*wn*m));
+fprintf('The damping coefficient calculated from the m,k,c coefficents is %.4f\n',damp_coeff)
+% calculate damping coeficient from decrement
+n = 2;
+x0 = .0597578;
+xn = .0217619;
+decrement = (1/n)*log(x0/xn);
+damp_dec = decrement/sqrt(4*pi^2 + decrement^2);
+fprintf('The damping coefficient calculated from the log decrement is %.4f\n',damp_dec)
+
+% initial conditions
+y0 = [ 0.1 0 ]'; % free release
+% time range
+tspan = [ 0 4 ];
+% measure CPU time
+tic;
+[ t, y ] = ode23( 'ode_smd_yd', tspan, y0 );
+t_exe = toc
+% time step
+h = 1000 * diff(t); % units [msec]
+h = [ h ; h(end) ]; % repeat last value to make the same length as t
+n_time_steps = length( t )
+ave_time_step = mean( h )
+% time domain results
+figure( 1 )
+ subplot( 2, 2, 1 )
+ plot( t, y(:,1) )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Position [m]' )
+ axis( [ 0 4 -0.1 0.1 ] )
+ subplot( 2, 2, 2 )
+ plot( t, y(:,2) )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Velocity [m/sec]' )
+ axis( [ 0 4 -1.5 1.5 ] )
+ subplot( 2, 2, 3 )
+ plot( y(:,1), y(:,2) )
+ xlabel( 'Position [m]' )
+ ylabel( 'Velocity [m/sec]]' )
+ subplot( 2, 2, 4 )
+ plot( t, h )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Time step [msec]' )
+% bottom - ode_smd_main
+
+%% Problem 3
+clc,clear all
+
+global m k c f
+% physical constants
+% x [m]
+% xd [m/sec]
+% xdd [m/sec^2]
+m = 1; % mass [kg]
+k = 157.9; % spring [N/m] - causes wn = 2Hz
+c = 0; % viscous [N.sec/m] - causes 4 sec exp decay
+f = .5; %N 
+% calculate damping coeficient from coefficients
+% wn = sqrt(k/m);
+% damp_coeff = (c/(2*wn*m));
+% fprintf('The damping coefficient calculated from the m,k,c coefficents is %.4f\n',damp_coeff)
+% % calculate damping coeficient from decrement
+% n = 2;
+% x0 = .0597578;
+% xn = .0217619;
+% decrement = (1/n)*log(x0/xn);
+% damp_dec = decrement/sqrt(4*pi^2 + decrement^2);
+% fprintf('The damping coefficient calculated from the log decrement is %.4f\n',damp_dec)
+
+% initial conditions
+y0 = [ 0.1 0 ]'; % free release
+% time range
+tspan = [ 0 4 ];
+% measure CPU time
+tic;
+[ t, y ] = ode23( 'ode_smd_yd2', tspan, y0 );
+t_exe = toc
+% time step
+h = 1000 * diff(t); % units [msec]
+h = [ h ; h(end) ]; % repeat last value to make the same length as t
+n_time_steps = length( t )
+ave_time_step = mean( h )
+% time domain results
+% calculate Coulomb friction force from decay envelope
+n = 3;
+x0 = .0868991;
+xn = .0482818;
+f_computed = (k*(x0 - xn))/(4*n);
+fprintf('The Coulomb friction force computed from the decay envelope of the simulation data is %.3f [N]\n',f_computed)
+
+figure( 2 )
+ subplot( 2, 2, 1 )
+ plot( t, y(:,1) )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Position [m]' )
+ axis( [ 0 4 -0.1 0.1 ] )
+ subplot( 2, 2, 2 )
+ plot( t, y(:,2) )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Velocity [m/sec]' )
+ axis( [ 0 4 -1.5 1.5 ] )
+ subplot( 2, 2, 3 )
+ plot( y(:,1), y(:,2) )
+ xlabel( 'Position [m]' )
+ ylabel( 'Velocity [m/sec]]' )
+ subplot( 2, 2, 4 )
+ plot( t, h )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Time step [msec]' )
+ 
+ %% Problem 5
+clc,clear all
+
+global m k mu_s mu_d g epsilon vdr xdr0
+% physical constants
+% x [m]
+% xd [m/sec]
+% xdd [m/sec^2]
+m = 12.5; % mass [kg]
+k = 742.5; % spring [N/m] - causes wn = 2Hz
+g = 9.81; %m/s^2
+mu_d = .6;
+mu_s = .9;
+epsilon = 1*10^-3; %m/s^2
+vdr = 3.4 * (10^-2); %m/s
+xdr0 = .04; %m initial distance of driver
+% calculate damping coeficient from coefficients
+% wn = sqrt(k/m);
+% damp_coeff = (c/(2*wn*m));
+% fprintf('The damping coefficient calculated from the m,k,c coefficents is %.4f\n',damp_coeff)
+% % calculate damping coeficient from decrement
+% n = 2;
+% x0 = .0597578;
+% xn = .0217619;
+% decrement = (1/n)*log(x0/xn);
+% damp_dec = decrement/sqrt(4*pi^2 + decrement^2);
+% fprintf('The damping coefficient calculated from the log decrement is %.4f\n',damp_dec)
+
+% initial conditions
+y0 = [ 0 0 ]'; % free release
+% time range
+tspan = [ 0 15 ];
+% measure CPU time
+tic;
+[ t, y ] = ode23( 'ode_dragsled_yd', tspan, y0 );
+t_exe = toc
+% time step
+h = 1000 * diff(t); % units [msec]
+h = [ h ; h(end) ]; % repeat last value to make the same length as t
+n_time_steps = length( t )
+ave_time_step = mean( h )
+% time domain results
+% calculate Coulomb friction force from decay envelope
+% n = 3;
+% x0 = .0868991;
+% xn = .0482818;
+% f_computed = (k*(x0 - xn))/(4*n);
+% fprintf('The Coulomb friction force computed from the decay envelope of the simulation data is %.3f [N]\n',f_computed)
+
+figure( 3 )
+ subplot( 2, 2, 1 )
+ plot( t, y(:,1) )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Position [m]' )
+%  axis( [ 0 4 -0.1 0.1 ] )
+ subplot( 2, 2, 2 )
+ plot( t, y(:,2) )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Velocity [m/sec]' )
+%  axis( [ 0 4 -1.5 1.5 ] )
+ subplot( 2, 2, 3 )
+ plot( t, gradient(y(:,2)) )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Acceleration [m/sec^2]]' )
+ subplot( 2, 2, 4 )
+ plot( t, h )
+ xlabel( 'Time [sec]' )
+ ylabel( 'Time step [msec]' )
+
+##### SOURCE END #####
+--></body></html>
