@@ -1,6 +1,6 @@
 % show_body2.m - show motion for collision detection
 % HJSIII, 19.04.24
-clear
+clc,clear,close all
 % motion data
 % time x2 y2 phi2 x3 y3 phi3
 % [sec] [in] [in] [rad] [in] [in] [rad]
@@ -67,14 +67,34 @@ figure( 1 )
  %find points p2 in p3
  
  IN_2in3 = inpolygon(r2_poly(1,1:end-1),r2_poly(2,1:end-1),r3_poly(1,1:end-1),r3_poly(2,1:end-1));
+ verticies_2in3 = find(IN_2in3==1);
+ if ~isempty(verticies_2in3)
+    fprintf('Body 2 vertices shown below are in body 3 at time=%i\n',t)
+    verticies_2in3
+ end
  if any(IN_2in3==1)
      PiP_2in3(itime) = 1;
  end
  IN_3in2 = inpolygon(r3_poly(1,1:end-1),r3_poly(2,1:end-1),r2_poly(1,1:end-1),r2_poly(2,1:end-1));
+ verticies_3in2 = find(IN_3in2==1);
+ if ~isempty(verticies_3in2)
+    fprintf('Body 3 vertices shown below are in body 2 at time=%i\n',t)
+    verticies_3in2
+ end
  if any(IN_3in2==1)
      PiP_3in2(itime) = 1;
  end
  
+ % find intersections using polyxpoly
+ [XI,YI,II] = polyxpoly(r2_poly(1,:),r2_poly(2,:),r3_poly(1,:),r3_poly(2,:));
+ if ~isempty(XI)
+     fprintf('Edge intersections at time=%i\n',t)
+     disp('xi yi edge2 edge3')
+     for i=1:length(XI)
+         fprintf('%f  %f  %i  %i\n',XI(i),YI(i),II(i,1),II(i,2))
+     end
+     disp(' ')
+ end
 %  disp(IN_2in3)
 %  for i=1:(length(r2_poly)-1)
 %      x2 = r2_poly(1,i);
@@ -98,15 +118,23 @@ figure( 1 )
  axis equal
  hold on
  plot( r2_poly(1,:), r2_poly(2,:), 'r',r3_poly(1,:),r3_poly(2,:),'b' ) % closed curve
+ if ~isempty(verticies_2in3)
+     plot(r2_poly(1,verticies_2in3),r2_poly(2,verticies_2in3),'ro')
+ end
+ if ~isempty(verticies_3in2)
+     plot(r3_poly(1,verticies_3in2),r3_poly(2,verticies_3in2),'ro')
+ end
+ plot(XI,YI,'go')
  end % bottom - for itime
- 
+ title('Body 2 and 3 trajectory with Point-in-polygon and edge intersection collisions visualized')
 
  BC_collision_times = find(BC_collisions==1) - 1;
  fprintf('Problem 3:\nObjects are candidates for collision as determined by the bounding circles test at times shown in the array below\n')
  BC_collision_times
  fprintf('Problem 4:\nObjects are candidates for collision as determined by the point-in-polygon for body 2 in body 3 test at times shown in the array below\n')
  PiP_2in3_times = find(PiP_2in3==1)-1
- fprintf('Problem 5:\nObjects are candidates for collision as determined by the point-in-polygon for body 3 in body 2 test at times shown in the array below\n')
+ fprintf('Problem 4:\nObjects are candidates for collision as determined by the point-in-polygon for body 3 in body 2 test at times shown in the array below\n')
  PiP_3in2_times = find(PiP_3in2==1)-1
+ fprintf('Problem 5: edge intersections can be found above in output')
  
 % bottom - show_body2.m
