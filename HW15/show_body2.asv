@@ -105,8 +105,9 @@ figure( 1 )
  fprintf('Problem 3:\nObjects are candidates for collision as determined by the bounding circles test at times shown in the array below\n')
  BC_collision_times
  fprintf('Problem 4:\nObjects are candidates for collision as determined by the point-in-polygon for body 2 in body 3 test at times shown in the array below\n')
- PiP_2in3_times = find(PiP_2in3==1)-1
- fprintf('Problem 5:\nObjects are candidates for collision as determined by the point-in-polygon for body 3 in body 2 test at times shown in the array below\n')
- PiP_3in2_times = find(PiP_3in2==1)-1
+ PiP_2in3_times = find(PiP_2in3==1)-1;
+ fprintf('Problem 4:\nObjects are candidates for collision as determined by the point-in-polygon for body 2 in body 3 test at times shown in the array below\n')
+
+ PiP_3in2_times = find(
  
 % bottom - show_body2.m
