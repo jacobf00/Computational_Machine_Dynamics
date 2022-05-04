@@ -13,7 +13,8 @@ clc,clear,close all
 load('data_original_WM.mat')
 load('data_m10p_WM.mat')
 load('data_m20p_WM.mat')
-
+load('data_20rpm_WM.mat')
+load('data_30rpm_WM.mat')
 
 
 
@@ -69,6 +70,7 @@ plot(posx_nom(:,2),posy_nom(:,2),'b')
 plot(posx_10s(:,2),posy_10s(:,2))
 plot(posx_20s(:,2),posy_20s(:,2))
 hold off
+axis equal
 xlabel('Leg ground x position [m]')
 ylabel('Leg ground y position [m]')
 title('Leg ground point path (SolidWorks)')
@@ -81,6 +83,7 @@ hold on
 plot(P_m10p_WM(:,1),P_m10p_WM(:,2))
 plot(P_m20p_WM(:,1),P_m20p_WM(:,2))
 hold off
+axis equal
 xlabel('Leg ground x position [m]')
 ylabel('Leg ground y position [m]')
 title('Leg ground point path (Working Model)')
@@ -95,9 +98,14 @@ hold on
 plot(posx_10s(1:step:end,2)+x_adjust,posy_10s(1:step:end,2),'ro',P_m10p_WM(:,1),P_m10p_WM(:,2),'b')
 plot(posx_20s(1:step:end,2)+x_adjust,posy_20s(1:step:end,2),'ro',P_m20p_WM(:,1),P_m20p_WM(:,2),'b')
 hold off
+axis equal
 xlabel('Leg ground x position [m]')
 ylabel('Leg ground y position [m]')
 title('Leg ground point path (Working Model vs Solidworks)')
 legend('Working Model','SolidWorks')
+
+% PVA comparison between different RPMs
+
+
 
 

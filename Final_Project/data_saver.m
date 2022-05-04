@@ -1,12 +1,12 @@
 clc,clear, close all
 
-data = load('Final_model_m20p.dta');
+data = load('WM_30rpm.dta');
 
-t_m20p_WM = data(:,1);
-P_m20p_WM = data(:,[2 6]);
-V_m20p_WM = data(:,[3 7]);
-A_m20p_WM = data(:,[4 8]);
+t_30rpm_WM = data(:,1);
+P_30rpm_WM = data(:,[2 6]);
+V_30rpm_WM = data(:,[3 7]);
+A_30rpm_WM = data(:,[4 8]);
 
-save('data_m20p_WM','t_m20p_WM','P_m20p_WM','V_m20p_WM','A_m20p_WM')
+save('data_30rpm_WM','t_30rpm_WM','P_30rpm_WM','V_30rpm_WM','A_30rpm_WM')
 
-load('data_m20p_WM.mat')
+load('data_30rpm_WM.mat')
