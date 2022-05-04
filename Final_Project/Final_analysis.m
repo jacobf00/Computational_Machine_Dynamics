@@ -28,7 +28,7 @@ posy_10s = readmatrix('ydisp_10S.csv');
 posx_20s = readmatrix('xdisp_20S.csv');
 posy_20s = readmatrix('ydisp_20S.csv');
 
-figure(1)
+figure
 hold on 
 plot(posx_nom(:,2),posy_nom(:,2))
 plot(posx_10s(:,2),posy_10s(:,2))
@@ -48,7 +48,7 @@ for i = 1:length(posy_nom_gnd)
     end
 end
 
-figure(3)
+figure
 plot(posy_nom(:,1), posy_nom_gnd,posx_nom(:,1),accx_nom)
 yline(gnd_height)
 for i = 1:numel(gnd_touch_nom)
@@ -60,7 +60,7 @@ end
 
 % Original length WM vs SW leg path
 step = 2;
-figure(4)
+figure
 plot(P_original_WM(:,1),P_original_WM(:,2),posx_nom(1:step:end,2)+.376791,posy_nom(1:step:end,2),'ro')
 xlabel('Leg ground x position [m]')
 ylabel('Leg ground y position [m]')
