@@ -20,7 +20,7 @@ load('data_WM.mat')
 
 posx_nom = readmatrix('xdisp_nom.csv');
 posy_nom = readmatrix('ydisp_nom.csv');
-posy_nom_gnd = posy_nom(:,2)+.82;
+posy_nom_gnd = posy_nom(:,2)+.8;
 
 posx_10s = readmatrix('xdisp_10S.csv');
 posy_10s = readmatrix('ydisp_10S.csv');
@@ -40,21 +40,15 @@ accx_nom = gradient(velx_nom,posx_nom(:,1));
 
 gnd_height = 0;
 gnd_touch_nom = zeros(1,4);
-j = 1;
 for i = 1:length(posy_nom_gnd)
-    if posy_nom_gnd(i) <= gnd_height + .00105 && posy_nom_gnd(i) >= gnd_height - .00105
-        gnd_touch_nom(j) = i;
-        j = j+1;
+    if posy_nom_gnd(i) == gnd_height + 
+        gnd_touch_nom = i;
     end
 end
 
 figure(3)
 plot(posy_nom(:,1), posy_nom_gnd,posx_nom(:,1),accx_nom)
 yline(gnd_height)
-for i = 1:numel(gnd_touch_nom)
-    xline(posy_nom(gnd_touch_nom(i),1))
-end
-
 
 %% Plotting
 
