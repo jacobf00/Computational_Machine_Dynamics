@@ -31,7 +31,6 @@ posx_20s = readmatrix('xdisp_20S.csv');
 posy_20s = readmatrix('ydisp_20S.csv');
 
 
-
 velx_nom = gradient(posx_nom(:,2),posx_nom(:,1));
 accx_nom = gradient(velx_nom,posx_nom(:,1));
 
@@ -45,7 +44,7 @@ for i = 1:length(posy_nom_gnd)
     end
 end
 
-figure(3)
+figure
 plot(posy_nom(:,1), posy_nom_gnd,posx_nom(:,1),accx_nom)
 yline(gnd_height)
 for i = 1:numel(gnd_touch_nom)
