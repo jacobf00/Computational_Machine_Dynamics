@@ -1,0 +1,12 @@
+clc,clear, close all
+
+data = load('Final_model_WM.dta');
+
+t_original_WM = data(:,1);
+P_original_WM = data(:,[2 6]);
+V_original_WM = data(:,[3 7]);
+A_original_WM = data(:,[4 8]);
+
+save('dataoriginal__WM','t_WM','P_WM','V_WM','A_WM')
+
+load('data_WM.mat')
