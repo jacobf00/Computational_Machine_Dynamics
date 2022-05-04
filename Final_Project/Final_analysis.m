@@ -33,6 +33,10 @@ posy_20s = readmatrix('ydisp_20S.csv');
 posx_nom_20rpm = readmatrix('xdisp_nom_20rpm.csv');
 posy_nom_20rpm = readmatrix('ydisp_nom_20rpm.csv');
 
+
+velx_nom_20rpm = gradient(posx_nom_20rpm(:,2),posx_nom_20rpm(:,1));
+accx_nom_20rpm = gradient(velx_nom_20rpm,posx_nom_20rpm(:,1));
+
 velx_nom = gradient(posx_nom(:,2),posx_nom(:,1));
 accx_nom = gradient(velx_nom,posx_nom(:,1));
 
@@ -53,7 +57,9 @@ for i = 1:numel(gnd_touch_nom)
     xline(posy_nom(gnd_touch_nom(i),1))
 end
 
-
+figure
+plot(posy_nom(:,1),accx_nom,posy_nom_20rpm(:,1),accx_nom_20rpm)
+legend ('10rpm', '20rpm')
 %% Plotting
 
 % Different lengths SW
