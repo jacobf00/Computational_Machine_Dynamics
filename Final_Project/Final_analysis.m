@@ -1,3 +1,4 @@
+%% Working Model
 clc,clear,close all
 
 % data = load('Final_model_WM.dta');
@@ -10,3 +11,5 @@ clc,clear,close all
 % save('data_WM','t_WM','P_WM','V_WM','A_WM')
 
 load('data_WM.mat')
+%% Solidworks
+
