@@ -10,7 +10,7 @@ clc,clear,close all
 % 
 % save('data_WM','t_WM','P_WM','V_WM','A_WM')
 
-load('data_WM.mat')
+load('data_original_WM.mat')
 
 
 
@@ -61,7 +61,7 @@ end
 % Original length WM vs SW leg path
 step = 2;
 figure(4)
-plot(P_WM(:,1),P_WM(:,2),posx_nom(1:step:end,2)+.376791,posy_nom(1:step:end,2),'ro')
+plot(P_original_WM(:,1),P_original_WM(:,2),posx_nom(1:step:end,2)+.376791,posy_nom(1:step:end,2),'ro')
 xlabel('Leg ground x position [m]')
 ylabel('Leg ground y position [m]')
 title('Leg ground point path')
