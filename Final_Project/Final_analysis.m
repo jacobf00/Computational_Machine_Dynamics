@@ -215,6 +215,9 @@ for i = 1:numel(gnd_touch_nom_wm)
 end
 ylim([-1,1])
 xlim([0,12])
+ylabel('y position [m] and x acceleration [m/s^2]')
+title('y position and x acceleration vs driver angle to find x acceleration at ground intersection points (10 rpm)')
+legend('y position','x acceleration', 'ground intersection points')
 
 subplot(3,1,2)
 plot(theta_20rpm,P_20rpm_WM(:,2)+.8,theta_20rpm,A_20rpm_WM(:,1))
@@ -224,6 +227,9 @@ for i = 1:numel(gnd_touch_nom_20)
 end
 ylim([-3.4,3.4])
 xlim([0,12])
+ylabel('y position [m] and x acceleration [m/s^2]')
+title('y position and x acceleration vs driver angle to find x acceleration at ground intersection points (20 rpm)')
+legend('y position','x acceleration', 'ground intersection points')
 
 subplot(3,1,3)
 plot(theta_30rpm,P_30rpm_WM(:,2)+.8,theta_30rpm,A_30rpm_WM(:,1))
@@ -233,3 +239,8 @@ for i = 1:numel(gnd_touch_nom_30)
 end
 ylim([-7.6,6.5])
 xlim([0,12])
+xlabel('driver angle [rad]')
+ylabel('y position [m] and x acceleration [m/s^2]')
+title('y position and x acceleration vs driver angle to find x acceleration at ground intersection points (30 rpm)')
+legend('y position','x acceleration', 'ground intersection points')
+
