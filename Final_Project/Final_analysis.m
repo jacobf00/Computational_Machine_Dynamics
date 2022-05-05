@@ -153,3 +153,83 @@ xlabel('driver angle [rad]')
 legend('10 rpm', '20 rpm', '30 rpm')
 % ylim([-8 8])
 
+
+% Acc in the x vs pos in the y for different rpms
+gnd_height = 0;
+gnd_touch_nom_wm = zeros(1,4);
+error = .001;
+j = 1;
+det = 1;
+for i = 1:length(P_original_WM)
+    if det == 1
+        if P_original_WM(i,2)+.8 <= gnd_height + error && P_original_WM(i,2)+.8 >= gnd_height - error
+            gnd_touch_nom_wm(j) = i;
+            j = j+1;
+            det = 20;
+        end
+    end
+    if det > 1
+        det = det-1;
+    end
+end
+gnd_touch_nom_20 = zeros(1,4);
+error = .001;
+j = 1;
+det = 1;
+for i = 1:length(P_20rpm_WM)
+    if det == 1
+        if P_20rpm_WM(i,2)+.8 <= gnd_height + error && P_20rpm_WM(i,2)+.8 >= gnd_height - error
+            gnd_touch_nom_20(j) = i;
+            j = j+1;
+            det = 20;
+        end
+    end
+    if det > 1
+        det = det-1;
+    end
+end
+gnd_touch_nom_30 = zeros(1,4);
+error = .001;
+j = 1;
+det = 1;
+for i = 1:length(P_30rpm_WM)
+    if det == 1
+        if P_30rpm_WM(i,2)+.8 <= gnd_height + error && P_30rpm_WM(i,2)+.8 >= gnd_height - error
+            gnd_touch_nom_30(j) = i;
+            j = j+1;
+            det = 20;
+        end
+    end
+    if det > 1
+        det = det-1;
+    end
+end
+
+figure
+subplot(3,1,1)
+plot(theta_original,P_original_WM(:,2)+.8,theta_original,A_original_WM(:,1))
+% yline(gnd_height)
+
+for i = 1:numel(gnd_touch_nom_wm)
+    xline(theta_original(gnd_touch_nom_wm(i)))
+end
+ylim([-1,1])
+xlim([0,12])
+
+subplot(3,1,2)
+plot(theta_20rpm,P_20rpm_WM(:,2)+.8,theta_20rpm,A_20rpm_WM(:,1))
+% yline(gnd_height)
+for i = 1:numel(gnd_touch_nom_20)
+    xline(theta_20rpm(gnd_touch_nom_20(i)))
+end
+ylim([-3.4,3.4])
+xlim([0,12])
+
+subplot(3,1,3)
+plot(theta_30rpm,P_30rpm_WM(:,2)+.8,theta_30rpm,A_30rpm_WM(:,1))
+% yline(gnd_height)
+for i = 1:numel(gnd_touch_nom_30)
+    xline(theta_30rpm(gnd_touch_nom_30(i)))
+end
+ylim([-7.6,6.5])
+xlim([0,12])
