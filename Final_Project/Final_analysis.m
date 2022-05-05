@@ -118,10 +118,38 @@ figure
 subplot(3,1,1)
 plot(theta_original,P_original_WM(:,1),theta_20rpm,P_20rpm_WM(:,1),theta_30rpm,P_30rpm_WM(:,1))
 ylabel('x position of foot [m]')
+legend('10 rpm', '20 rpm', '30 rpm')
+title('x P-V-A compared at different driver speeds')
 
 subplot(3,1,2)
 plot(theta_original,V_original_WM(:,1),theta_20rpm,V_20rpm_WM(:,1),theta_30rpm,V_30rpm_WM(:,1))
+ylabel('x velocity of foot [m/s]')
+legend('10 rpm', '20 rpm', '30 rpm')
 
 subplot(3,1,3)
 plot(theta_original,A_original_WM(:,1),theta_20rpm, A_20rpm_WM(:,1),theta_30rpm, A_30rpm_WM(:,1))
+ylabel('x acceleration of foot [m/s^2]')
+xlabel('driver angle [rad]')
+legend('10 rpm', '20 rpm', '30 rpm')
 ylim([-8 8])
+
+
+figure
+subplot(3,1,1)
+plot(theta_original,P_original_WM(:,2),theta_20rpm,P_20rpm_WM(:,2),theta_30rpm,P_30rpm_WM(:,2))
+ylabel('y position of foot [m]')
+legend('10 rpm', '20 rpm', '30 rpm')
+title('y P-V-A compared at different driver speeds')
+
+subplot(3,1,2)
+plot(theta_original,V_original_WM(:,2),theta_20rpm,V_20rpm_WM(:,2),theta_30rpm,V_30rpm_WM(:,2))
+ylabel('y velocity of foot [m/s]')
+legend('10 rpm', '20 rpm', '30 rpm')
+
+subplot(3,1,3)
+plot(theta_original,A_original_WM(:,2),theta_20rpm, A_20rpm_WM(:,2),theta_30rpm, A_30rpm_WM(:,2))
+ylabel('y acceleration of foot [m/s^2]')
+xlabel('driver angle [rad]')
+legend('10 rpm', '20 rpm', '30 rpm')
+% ylim([-8 8])
+
